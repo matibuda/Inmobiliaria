@@ -1,6 +1,6 @@
 package ar.edu.unlam.pb1;
 
-public class Propiedad {
+public abstract class Propiedad {
 	protected static Integer contador = 1;
 	private String calle;
 	private Integer numero;

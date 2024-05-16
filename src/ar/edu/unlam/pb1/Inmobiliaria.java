@@ -8,7 +8,7 @@ public class Inmobiliaria {
 	private String direccion;
 	private String eMail;
 	private Integer telefono;
-	private ArrayList<Propiedad> propiedadesVendidas;
+	private ArrayList<Propiedad> propiedadesEnVenta;
 	private ArrayList<Campo> campos;
 	private ArrayList<Casa> casas;
 	private ArrayList<Departamento> departamentos;
@@ -26,7 +26,7 @@ public class Inmobiliaria {
 		this.departamentos = new ArrayList<>();
 		this.phs = new ArrayList<>();
 		this.terrenos = new ArrayList<>();
-		this.propiedadesVendidas = new ArrayList<>();
+		this.propiedadesEnVenta = new ArrayList<>();
 		this.clientes = new HashSet<>();
 	}
 
@@ -180,8 +180,8 @@ public class Inmobiliaria {
 		return casas;
 	}
 
-	public ArrayList<Propiedad> getPropiedadesVendidas() {
-		return propiedadesVendidas;
+	public ArrayList<Propiedad> getPropiedadesEnVenta() {
+		return propiedadesEnVenta;
 	}
 
 	public String mostrarPropiedades() {
@@ -353,6 +353,10 @@ public class Inmobiliaria {
 
 			}
 		}
+		
+		if(resultado.size()==0) {
+			return null;
+		}
 		return resultado;
 	}
 
@@ -434,7 +438,6 @@ public class Inmobiliaria {
 			if (campoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				campoAVender.setEstaDisponible(false);
 				cliente.agregarNuevoCampo(campoAVender);
-				propiedadesVendidas.add(campoAVender);
 
 			}
 
@@ -444,7 +447,6 @@ public class Inmobiliaria {
 			if (casaAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				casaAVender.setEstaDisponible(false);
 				cliente.addCasa(casaAVender);
-				propiedadesVendidas.add(casaAVender);
 			}
 			break;
 		case DEPARTAMENTO:
@@ -452,7 +454,6 @@ public class Inmobiliaria {
 			if (deptoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				deptoAVender.setEstaDisponible(false);
 				cliente.addDepto(deptoAVender);
-				propiedadesVendidas.add(deptoAVender);
 			}
 			break;
 		case PH:
@@ -460,7 +461,6 @@ public class Inmobiliaria {
 			if (phAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				phAVender.setEstaDisponible(false);
 				cliente.addPh(phAVender);
-				propiedadesVendidas.add(phAVender);
 			}
 			break;
 		case TERRENO:
@@ -468,7 +468,6 @@ public class Inmobiliaria {
 			if (terrenoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				terrenoAVender.setEstaDisponible(false);
 				cliente.addTerreno(terrenoAVender);
-				propiedadesVendidas.add(terrenoAVender);
 			}
 			break;
 		default:
@@ -554,6 +553,39 @@ public class Inmobiliaria {
 			promedio = sumatoriaDelPrecio / cantidadDeCasas;
 		}
 		return promedio;
+	}
+
+	public ArrayList<Propiedad> buscarPropiedadesEnVenta() {
+		for(Casa actual: casas) {
+			if(actual.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
+				propiedadesEnVenta.add(actual);
+			}
+		}
+		for(Departamento actual: departamentos) {
+			if(actual.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
+				propiedadesEnVenta.add(actual);
+			}
+		}
+		for(Campo actual: campos) {
+			if(actual.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
+				propiedadesEnVenta.add(actual);
+			}
+		}
+		for(Ph actual: phs) {
+			if(actual.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
+				propiedadesEnVenta.add(actual);
+			}
+		}
+		for(Terreno actual: terrenos) {
+			if(actual.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
+				propiedadesEnVenta.add(actual);
+			}
+		}
+		
+		if(propiedadesEnVenta.size()==0) {
+			return null;
+		}
+		return propiedadesEnVenta;
 	}
 
 }
