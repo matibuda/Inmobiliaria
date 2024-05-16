@@ -8,6 +8,7 @@ public class Inmobiliaria {
 	private String direccion;
 	private String eMail;
 	private Integer telefono;
+	private ArrayList<Propiedad> propiedadesVendidas;
 	private ArrayList<Campo> campos;
 	private ArrayList<Casa> casas;
 	private ArrayList<Departamento> departamentos;
@@ -25,6 +26,7 @@ public class Inmobiliaria {
 		this.departamentos = new ArrayList<>();
 		this.phs = new ArrayList<>();
 		this.terrenos = new ArrayList<>();
+		this.propiedadesVendidas = new ArrayList<>();
 		this.clientes = new HashSet<>();
 	}
 
@@ -48,7 +50,7 @@ public class Inmobiliaria {
 	public Boolean addCasa(Casa nueva) {
 		Casa existente = null;
 		existente = buscarCasa(nueva.getCodigo());
-		if(existente==null) {
+		if (existente == null) {
 			return casas.add(nueva);
 		}
 		return false;
@@ -57,7 +59,7 @@ public class Inmobiliaria {
 	public Boolean addDepto(Departamento nuevo) {
 		Departamento existente = null;
 		existente = buscarDepartamento(nuevo.getCodigo());
-		if(existente==null) {
+		if (existente == null) {
 			return departamentos.add(nuevo);
 		}
 		return false;
@@ -176,6 +178,10 @@ public class Inmobiliaria {
 
 	public ArrayList<Casa> getCasas() {
 		return casas;
+	}
+
+	public ArrayList<Propiedad> getPropiedadesVendidas() {
+		return propiedadesVendidas;
 	}
 
 	public String mostrarPropiedades() {
@@ -350,7 +356,7 @@ public class Inmobiliaria {
 		return resultado;
 	}
 
-	public String buscarPropiedadesPorPrecio(Double rango1, Double rango2) {
+	public String mostrarPropiedadesPorPrecio(Double rango1, Double rango2) {
 		String resultado = null;
 		for (Casa actual : casas) {
 			if (actual != null && actual.getPrecio() > rango1 && actual.getPrecio() < rango2) {
@@ -385,7 +391,7 @@ public class Inmobiliaria {
 
 	}
 
-	public String buscarPropiedadesPorCiudad(String ciudad) {
+	public String mostrarPropiedadesPorCiudad(String ciudad) {
 		String resultado = "";
 		for (Casa actual : casas) {
 			if (actual != null && actual.getCiudad().equalsIgnoreCase(ciudad)) {
@@ -428,6 +434,8 @@ public class Inmobiliaria {
 			if (campoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				campoAVender.setEstaDisponible(false);
 				cliente.agregarNuevoCampo(campoAVender);
+				propiedadesVendidas.add(campoAVender);
+
 			}
 
 			break;
@@ -435,28 +443,32 @@ public class Inmobiliaria {
 			Casa casaAVender = buscarCasa(codigoDePropiedad);
 			if (casaAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				casaAVender.setEstaDisponible(false);
-				cliente.agregarNuevaCasa(casaAVender);
+				cliente.addCasa(casaAVender);
+				propiedadesVendidas.add(casaAVender);
 			}
 			break;
 		case DEPARTAMENTO:
 			Departamento deptoAVender = buscarDepartamento(codigoDePropiedad);
 			if (deptoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				deptoAVender.setEstaDisponible(false);
-				cliente.agregarNuevoDepartamento(deptoAVender);
+				cliente.addDepto(deptoAVender);
+				propiedadesVendidas.add(deptoAVender);
 			}
 			break;
 		case PH:
 			Ph phAVender = buscarPh(codigoDePropiedad);
 			if (phAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				phAVender.setEstaDisponible(false);
-				cliente.agregarNuevoPh(phAVender);
+				cliente.addPh(phAVender);
+				propiedadesVendidas.add(phAVender);
 			}
 			break;
 		case TERRENO:
 			Terreno terrenoAVender = buscarTerreno(codigoDePropiedad);
 			if (terrenoAVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 				terrenoAVender.setEstaDisponible(false);
-				cliente.agregarNuevoTereno(terrenoAVender);
+				cliente.addTerreno(terrenoAVender);
+				propiedadesVendidas.add(terrenoAVender);
 			}
 			break;
 		default:
@@ -481,28 +493,28 @@ public class Inmobiliaria {
 			Casa casaAAlquilar = buscarCasa(codigoDePropiedad);
 			if (casaAAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
 				casaAAlquilar.setEstaDisponible(false);
-				cliente.agregarNuevaCasa(casaAAlquilar);
+				cliente.addCasa(casaAAlquilar);
 			}
 			break;
 		case DEPARTAMENTO:
 			Departamento deptoAAlquilar = buscarDepartamento(codigoDePropiedad);
 			if (deptoAAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
 				deptoAAlquilar.setEstaDisponible(false);
-				cliente.agregarNuevoDepartamento(deptoAAlquilar);
+				cliente.addDepto(deptoAAlquilar);
 			}
 			break;
 		case PH:
 			Ph phAAlquilar = buscarPh(codigoDePropiedad);
 			if (phAAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
 				phAAlquilar.setEstaDisponible(false);
-				cliente.agregarNuevoPh(phAAlquilar);
+				cliente.addPh(phAAlquilar);
 			}
 			break;
 		case TERRENO:
 			Terreno terrenoAAlquilar = buscarTerreno(codigoDePropiedad);
 			if (terrenoAAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
 				terrenoAAlquilar.setEstaDisponible(false);
-				cliente.agregarNuevoTereno(terrenoAAlquilar);
+				cliente.addTerreno(terrenoAAlquilar);
 			}
 			break;
 		default:

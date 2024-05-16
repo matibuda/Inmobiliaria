@@ -1,16 +1,18 @@
 package ar.edu.unlam.pb1;
 
+import java.util.ArrayList;
+
 public class Cliente {
 	private Integer dni;
 	private String nombre;
 	private String apellido;
 	private Integer telefono;
 	private String mail;
-	private Campo campos[];
-	private Casa casas[];
-	private Departamento departamentos[];
-	private Ph phs[];
-	private Terreno terrenos[];
+	private ArrayList<Campo> campos;
+	private ArrayList<Casa> casas;
+	private ArrayList<Departamento> departamentos;
+	private ArrayList<Ph> phs;
+	private ArrayList<Terreno> terrenos;
 
 	public Cliente(Integer dni, String nombre, String apellido, Integer telefono, String mail) {
 		this.dni = dni;
@@ -18,6 +20,11 @@ public class Cliente {
 		this.apellido = apellido;
 		this.telefono = telefono;
 		this.mail = mail;
+		this.campos = new ArrayList<>();
+		this.casas = new ArrayList<>();
+		this.departamentos = new ArrayList<>();
+		this.phs = new ArrayList<>();
+		this.terrenos = new ArrayList<>();
 	}
 
 	public String getNombre() {
@@ -56,23 +63,23 @@ public class Cliente {
 		return dni;
 	}
 
-	public Campo[] getCampos() {
+	public ArrayList<Campo> getCampos() {
 		return campos;
 	}
 
-	public Casa[] getCasas() {
+	public ArrayList<Casa> getCasas() {
 		return casas;
 	}
 
-	public Departamento[] getDepartamentos() {
+	public ArrayList<Departamento> getDepartamentos() {
 		return departamentos;
 	}
 
-	public Ph[] getPhs() {
+	public ArrayList<Ph> getPhs() {
 		return phs;
 	}
 
-	public Terreno[] getTerrenos() {
+	public ArrayList<Terreno> getTerrenos() {
 		return terrenos;
 	}
 
@@ -82,8 +89,8 @@ public class Cliente {
 	}
 
 	public Boolean agregarNuevoCampo(Campo nuevo) {
-		for(Campo actual : campos) {
-			if(actual==null) {
+		for (Campo actual : campos) {
+			if (actual == null) {
 				actual = nuevo;
 				return true;
 			}
@@ -91,47 +98,24 @@ public class Cliente {
 		return false;
 	}
 
-	public Boolean agregarNuevaCasa(Casa nuevo) {
-		for(Casa actual : casas) {
-			if(actual==null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
+	public Boolean addCasa(Casa nueva) {
+		return casas.add(nueva);
 	}
 
-	public Boolean agregarNuevoDepartamento(Departamento nuevo) {
-		for(Departamento actual : departamentos) {
-			if(actual==null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;		
+	public Boolean addDepto(Departamento nuevo) {
+		return departamentos.add(nuevo);
 	}
 
-	public Boolean agregarNuevoPh(Ph nuevo) {
-		for(Ph actual : phs) {
-			if(actual==null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
+	public Boolean addCampo(Campo nuevo) {
+		return campos.add(nuevo);
 	}
 
-	public Boolean agregarNuevoTereno(Terreno nuevo) {
-		for(Terreno actual : terrenos) {
-			if(actual==null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
-		
+	public Boolean addPh(Ph nuevo) {
+		return phs.add(nuevo);
 	}
-	
-	
+
+	public Boolean addTerreno(Terreno nuevo) {
+		return terrenos.add(nuevo);
+	}
 
 }

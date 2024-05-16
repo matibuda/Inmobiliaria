@@ -95,11 +95,11 @@ public class InterfazInmobiliaria {
 				System.out.println("Ingrese el rango de precios para las propiedades (primero el menor y luego el mayor)");
 				Double rango1 = teclado.nextDouble();
 				Double rango2 = teclado.nextDouble();
-				System.out.println(actual.buscarPropiedadesPorPrecio(rango1, rango2));
+				System.out.println(actual.mostrarPropiedadesPorPrecio(rango1, rango2));
 			case BUSCAR_PROPIEDADES_POR_UBICACION:
 				System.out.println("Ingrese la ciudad en que quiera buscar propiedades");
 				String ciudad = teclado.next();
-				System.out.println(actual.buscarPropiedadesPorCiudad(ciudad));
+				System.out.println(actual.mostrarPropiedadesPorCiudad(ciudad));
 			case REALIZAR_VENTA:
 				System.out.println("Ingrese el dni del cliente que quiere comprar la propiedad");
 				Integer dni = teclado.nextInt();

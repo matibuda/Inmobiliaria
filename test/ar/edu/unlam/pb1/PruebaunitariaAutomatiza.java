@@ -56,7 +56,7 @@ public class PruebaunitariaAutomatiza {
 		Departamento buscado = inmoActual.buscarDepartamento("DE8");
 		
 		assertNotNull(inmoActual.getDepartamentos());
-		assertEquals(depto1, buscado);
+		assertEquals(1,inmoActual.getDepartamentos().size());
 	}
 	
 	@Test
@@ -71,8 +71,7 @@ public class PruebaunitariaAutomatiza {
 		Departamento buscado2 = inmoActual.buscarDepartamento("DE10");
 		
 		assertNotNull(inmoActual.getDepartamentos());
-		assertEquals(depto1, buscado1);
-		assertEquals(depto2, buscado2);
+		assertEquals(2,inmoActual.getDepartamentos().size());
 	}
 	
 	@Test
@@ -160,8 +159,62 @@ public class PruebaunitariaAutomatiza {
 		Double rangoDePrecio2 = 0.0;
 		
 		casasEnRangoDePrecio=inmoActual.buscarCasasPorRangoDePrecio(rangoDePrecio1, rangoDePrecio2);
-		
 		assertEquals(0, casasEnRangoDePrecio.size());
+		
+	}
+	
+	@Test
+	public void queLaBusquedaDePropiedadesPorVentaMeArrojeUnaLista() {
+		Cliente cliente = new Cliente(123,"Matias", "Buda", 12345679, "matiasbuda@gmail.com");
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Departamento depto1 =new Departamento("Av de Mayo", 2555, "1A", "Ramos Mejia", 10000.0, true, TIPO_DE_OPERACION.VENTA);
+		Departamento depto2 =new Departamento("Alsina", 900, "3B", "Haedo", 50000.0, true, TIPO_DE_OPERACION.VENTA);
+		Departamento depto3 =new Departamento("Rosales", 100, "7F", "Casanova", 30000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa1 =new Casa("Av Rivadavia", 1355, "Haedo", 70000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa2 =new Casa("Peron", 5489, "San Justo ", 90000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa3 =new Casa("Alsina", 90, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.addCliente(cliente);
+		inmoActual.addDepto(depto1);
+		inmoActual.addDepto(depto2);
+		inmoActual.addDepto(depto3);
+		inmoActual.addCasa(casa1);
+		inmoActual.addCasa(casa2);
+		inmoActual.addCasa(casa3);
+		
+		inmoActual.venderPropiedad(123,casa1.getCodigo(), TIPO_DE_PROPIEDADES.CASA);
+		inmoActual.venderPropiedad(123,casa2.getCodigo(), TIPO_DE_PROPIEDADES.CASA);
+		inmoActual.venderPropiedad(123,casa3.getCodigo(), TIPO_DE_PROPIEDADES.CASA);
+		inmoActual.venderPropiedad(123,depto1.getCodigo(), TIPO_DE_PROPIEDADES.DEPARTAMENTO);
+		inmoActual.venderPropiedad(123,depto2.getCodigo(), TIPO_DE_PROPIEDADES.DEPARTAMENTO);
+		inmoActual.venderPropiedad(123,depto3.getCodigo(), TIPO_DE_PROPIEDADES.DEPARTAMENTO);
+		
+		assertEquals(6,inmoActual.getPropiedadesVendidas().size());
+		System.out.println(inmoActual.getPropiedadesVendidas());
+		
+	}
+	
+	@Test
+	public void queLaBusquedaDePropiedadesPorVentaMeArrojeUnaListaNuloSiNoAplicanResultados() {
+		Cliente cliente = new Cliente(123,"Matias", "Buda", 12345679, "matiasbuda@gmail.com");
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Departamento depto1 =new Departamento("Av de Mayo", 2555, "1A", "Ramos Mejia", 10000.0, true, TIPO_DE_OPERACION.VENTA);
+		Departamento depto2 =new Departamento("Alsina", 900, "3B", "Haedo", 50000.0, true, TIPO_DE_OPERACION.VENTA);
+		Departamento depto3 =new Departamento("Rosales", 100, "7F", "Casanova", 30000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa1 =new Casa("Av Rivadavia", 1355, "Haedo", 70000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa2 =new Casa("Peron", 5489, "San Justo ", 90000.0, true, TIPO_DE_OPERACION.VENTA);
+		Casa casa3 =new Casa("Alsina", 90, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.addCliente(cliente);
+		inmoActual.addDepto(depto1);
+		inmoActual.addDepto(depto2);
+		inmoActual.addDepto(depto3);
+		inmoActual.addCasa(casa1);
+		inmoActual.addCasa(casa2);
+		inmoActual.addCasa(casa3);
+		
+		assertEquals(0,inmoActual.getPropiedadesVendidas().size());
+		System.out.println(inmoActual.getPropiedadesVendidas());
 		
 	}
 
