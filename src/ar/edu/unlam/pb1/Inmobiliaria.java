@@ -1,28 +1,31 @@
 package ar.edu.unlam.pb1;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 public class Inmobiliaria {
 	private String nombre;
 	private String direccion;
 	private String eMail;
 	private Integer telefono;
-	private Campo campos[];
-	private Casa casas[];
-	private Departamento departamentos[];
-	private Ph phs[];
-	private Terreno terrenos[];
-	private Cliente clientes[];
-	private final Integer CANTIDAD_MAXIMA_DE_PROPIEDADES = 100;
+	private ArrayList<Campo> campos;
+	private ArrayList<Casa> casas;
+	private ArrayList<Departamento> departamentos;
+	private ArrayList<Ph> phs;
+	private ArrayList<Terreno> terrenos;
+	private HashSet<Cliente> clientes;
 
 	public Inmobiliaria(String nombre, String direccion, String eMail, int telefono) {
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.eMail = eMail;
 		this.telefono = telefono;
-		this.campos = new Campo[CANTIDAD_MAXIMA_DE_PROPIEDADES];
-		this.casas = new Casa[CANTIDAD_MAXIMA_DE_PROPIEDADES];
-		this.departamentos = new Departamento[CANTIDAD_MAXIMA_DE_PROPIEDADES];
-		this.phs = new Ph[CANTIDAD_MAXIMA_DE_PROPIEDADES];
-		this.terrenos = new Terreno[CANTIDAD_MAXIMA_DE_PROPIEDADES];
+		this.campos = new ArrayList<>();
+		this.casas = new ArrayList<>();
+		this.departamentos = new ArrayList<>();
+		this.phs = new ArrayList<>();
+		this.terrenos = new ArrayList<>();
+		this.clientes = new HashSet<>();
 	}
 
 	public Inmobiliaria() {
@@ -30,17 +33,7 @@ public class Inmobiliaria {
 	}
 
 	public Boolean addCliente(Cliente nuevo) {
-		Cliente aAgregar = null;
-		aAgregar = buscarCliente(nuevo.getDni());
-		if (aAgregar == null) {
-			for (Cliente porAgregar : clientes) {
-				if (porAgregar == null) {
-					porAgregar = nuevo;
-					return true;
-				}
-			}
-		}
-		return false;
+		return clientes.add(nuevo);
 	}
 
 	public Cliente buscarCliente(Integer dni) {
@@ -53,77 +46,33 @@ public class Inmobiliaria {
 	}
 
 	public Boolean addCasa(Casa nueva) {
-		for (int i = 0; i < CANTIDAD_MAXIMA_DE_PROPIEDADES; i++) {
-			if (!asegurarseDeQueNoExistaLaCasa(nueva)) {
-				if (casas[i] == null) {
-					casas[i] = nueva;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean asegurarseDeQueNoExistaLaCasa(Casa nueva) {
-		for (Casa actual : casas) {
-			if (actual != null && actual.equals(nueva)) {
-				return true;
-			}
-
+		Casa existente = null;
+		existente = buscarCasa(nueva.getCodigo());
+		if(existente==null) {
+			return casas.add(nueva);
 		}
 		return false;
 	}
 
 	public Boolean addDepto(Departamento nuevo) {
-		for (int i = 0; i < CANTIDAD_MAXIMA_DE_PROPIEDADES; i++) {
-			if (!asegurarseDeQueNoExistaElDepartamento(nuevo)) {
-				if (departamentos[i] == null) {
-					departamentos[i] = nuevo;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean asegurarseDeQueNoExistaElDepartamento(Departamento nuevo) {
-		for (Departamento actual : departamentos) {
-			if (actual != null && actual.equals(nuevo)) {
-				return true;
-			}
-
+		Departamento existente = null;
+		existente = buscarDepartamento(nuevo.getCodigo());
+		if(existente==null) {
+			return departamentos.add(nuevo);
 		}
 		return false;
 	}
 
 	public Boolean addCampo(Campo nuevo) {
-		for (Campo actual : campos) {
-			if (actual == null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
+		return campos.add(nuevo);
 	}
 
 	public Boolean addPh(Ph nuevo) {
-		for (Ph actual : phs) {
-			if (actual == null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
+		return phs.add(nuevo);
 	}
 
 	public Boolean addTerreno(Terreno nuevo) {
-		for (Terreno actual : terrenos) {
-			if (actual == null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
+		return terrenos.add(nuevo);
 	}
 
 	public Casa buscarCasa(String codigoDeCasa) {
@@ -221,11 +170,11 @@ public class Inmobiliaria {
 		this.telefono = telefono;
 	}
 
-	public Departamento[] getDepartamentos() {
+	public ArrayList<Departamento> getDepartamentos() {
 		return departamentos;
 	}
 
-	public Casa[] getCasas() {
+	public ArrayList<Casa> getCasas() {
 		return casas;
 	}
 
@@ -262,164 +211,143 @@ public class Inmobiliaria {
 
 	public void ordenarCasasPorPrecio() {
 		Casa temp = null;
-		for (Casa actual : casas) {
-			for (int j = 0; j < casas.length - 1; j++) {
-				if (casas[j].getPrecio() < casas[j + 1].getPrecio()) {
-					temp = casas[j + 1];
-					casas[j + 1] = casas[j];
-					casas[j] = temp;
+		for (int i = 0; i < casas.size(); i++) {
+			for (int j = 0; j < casas.size() - 1; j++) {
+				if (casas.get(j).getPrecio() > casas.get(j + 1).getPrecio()) {
+					temp = casas.get(j);
+					casas.set(j, casas.get(j + 1));
+					casas.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarCamposPorPrecio() {
 		Campo temp = null;
-		for (Campo actual : campos) {
-			for (int j = 0; j < campos.length - 1; j++) {
-				if (campos[j].getPrecio() < campos[j + 1].getPrecio()) {
-					temp = campos[j + 1];
-					campos[j + 1] = campos[j];
-					campos[j] = temp;
+		for (int i = 0; i < campos.size(); i++) {
+			for (int j = 0; j < campos.size() - 1; j++) {
+				if (campos.get(j).getPrecio() > campos.get(j + 1).getPrecio()) {
+					temp = campos.get(j);
+					campos.set(j, campos.get(j + 1));
+					campos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarDepartamentosPorPrecio() {
 		Departamento temp = null;
-		for (Departamento actual : departamentos) {
-			for (int j = 0; j < departamentos.length - 1; j++) {
-				if (departamentos[j].getPrecio() < departamentos[j + 1].getPrecio()) {
-					temp = departamentos[j + 1];
-					departamentos[j + 1] = departamentos[j];
-					departamentos[j] = temp;
+		for (int i = 0; i < departamentos.size(); i++) {
+			for (int j = 0; j < departamentos.size() - 1; j++) {
+				if (departamentos.get(j).getPrecio() > departamentos.get(j + 1).getPrecio()) {
+					temp = departamentos.get(j);
+					departamentos.set(j, departamentos.get(j + 1));
+					departamentos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarPhsPorPrecio() {
 		Ph temp = null;
-		for (Ph actual : phs) {
-			for (int j = 0; j < phs.length - 1; j++) {
-				if (phs[j].getPrecio() < phs[j + 1].getPrecio()) {
-					temp = phs[j + 1];
-					phs[j + 1] = phs[j];
-					phs[j] = temp;
+		for (int i = 0; i < phs.size(); i++) {
+			for (int j = 0; j < phs.size() - 1; j++) {
+				if (phs.get(j).getPrecio() > phs.get(j + 1).getPrecio()) {
+					temp = phs.get(j);
+					phs.set(j, phs.get(j + 1));
+					phs.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarTerrenosPorPrecio() {
 		Terreno temp = null;
-		for (Terreno actual : terrenos) {
-			for (int j = 0; j < terrenos.length - 1; j++) {
-				if (terrenos[j].getPrecio() < terrenos[j + 1].getPrecio()) {
-					temp = terrenos[j + 1];
-					terrenos[j + 1] = terrenos[j];
-					terrenos[j] = temp;
+		for (int i = 0; i < terrenos.size(); i++) {
+			for (int j = 0; j < terrenos.size() - 1; j++) {
+				if (terrenos.get(j).getPrecio() > terrenos.get(j + 1).getPrecio()) {
+					temp = terrenos.get(j);
+					terrenos.set(j, terrenos.get(j + 1));
+					terrenos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarCasasPorCiudad() {
 		Casa temp = null;
-		for (Casa actual : casas) {
-			for (int j = 0; j < casas.length - 1; j++) {
-				if (casas[j].getCiudad().compareToIgnoreCase(casas[j + 1].getCiudad()) > 0) {
-					temp = casas[j + 1];
-					casas[j + 1] = casas[j];
-					casas[j] = temp;
+		for (int i = 0; i < casas.size(); i++) {
+			for (int j = 0; j < casas.size() - 1; j++) {
+				if (casas.get(j).getCiudad().compareTo(casas.get(j + 1).getCiudad()) > 0) {
+					temp = casas.get(j);
+					casas.set(j, casas.get(j + 1));
+					casas.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarCamposPorCiudad() {
 		Campo temp = null;
-		for (Campo actual : campos) {
-			for (int j = 0; j < campos.length - 1; j++) {
-				if (campos[j].getCiudad().compareToIgnoreCase(campos[j + 1].getCiudad()) > 0) {
-					temp = campos[j + 1];
-					campos[j + 1] = campos[j];
-					campos[j] = temp;
+		for (int i = 0; i < campos.size(); i++) {
+			for (int j = 0; j < campos.size() - 1; j++) {
+				if (campos.get(j).getCiudad().compareTo(campos.get(j + 1).getCiudad()) > 0) {
+					temp = campos.get(j);
+					campos.set(j, campos.get(j + 1));
+					campos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarDepartamentosPorCiudad() {
 		Departamento temp = null;
-		for (Departamento actual : departamentos) {
-			for (int j = 0; j < departamentos.length - 1; j++) {
-				if (departamentos[j].getCiudad().compareToIgnoreCase(departamentos[j + 1].getCiudad()) > 0) {
-					temp = departamentos[j + 1];
-					departamentos[j + 1] = departamentos[j];
-					departamentos[j] = temp;
+		for (int i = 0; i < departamentos.size(); i++) {
+			for (int j = 0; j < departamentos.size() - 1; j++) {
+				if (departamentos.get(j).getCiudad().compareTo(departamentos.get(j + 1).getCiudad()) > 0) {
+					temp = departamentos.get(j);
+					departamentos.set(j, departamentos.get(j + 1));
+					departamentos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarPhsPorCiudad() {
 		Ph temp = null;
-		for (Ph actual : phs) {
-			for (int j = 0; j < phs.length - 1; j++) {
-				if (phs[j].getCiudad().compareToIgnoreCase(phs[j + 1].getCiudad()) > 0) {
-					temp = phs[j + 1];
-					phs[j + 1] = phs[j];
-					phs[j] = temp;
+		for (int i = 0; i < phs.size(); i++) {
+			for (int j = 0; j < phs.size() - 1; j++) {
+				if (phs.get(j).getCiudad().compareTo(phs.get(j + 1).getCiudad()) > 0) {
+					temp = phs.get(j);
+					phs.set(j, phs.get(j + 1));
+					phs.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
 	public void ordenarTerrenosPorCiudad() {
 		Terreno temp = null;
-		for (Terreno actual : terrenos) {
-			for (int j = 0; j < terrenos.length - 1; j++) {
-				if (terrenos[j].getCiudad().compareToIgnoreCase(terrenos[j + 1].getCiudad()) > 0) {
-					temp = terrenos[j + 1];
-					terrenos[j + 1] = terrenos[j];
-					terrenos[j] = temp;
+		for (int i = 0; i < terrenos.size(); i++) {
+			for (int j = 0; j < terrenos.size() - 1; j++) {
+				if (terrenos.get(j).getCiudad().compareTo(terrenos.get(j + 1).getCiudad()) > 0) {
+					temp = terrenos.get(j);
+					terrenos.set(j, terrenos.get(j + 1));
+					terrenos.set(j + 1, temp);
 				}
 			}
-
 		}
 	}
 
-	public Casa[] buscarCasasPorRangoDePrecio(Double rango1, Double rango2) {
-		int count = 0;
-		int index = 0;
-		Casa[] CasasEnRangoDePrecio =null;
+	public ArrayList<Casa> buscarCasasPorRangoDePrecio(Double rango1, Double rango2) {
+		ArrayList<Casa> resultado = new ArrayList<>();
 		for (Casa actual : casas) {
-			if (actual != null && actual.getPrecio() >= rango1 && actual.getPrecio() <= rango2) {
-				count++;
-			}
-		}
+			if (actual.getPrecio() >= rango1 && actual.getPrecio() <= rango2) {
+				resultado.add(actual);
 
-		if (count != 0) {
-			CasasEnRangoDePrecio = new Casa[count];
-			for (Casa actual : casas) {
-				if (actual != null && actual.getPrecio() >= rango1 && actual.getPrecio() <= rango2) {
-					CasasEnRangoDePrecio[index] = actual;
-					index++;
-				}
 			}
 		}
-		return CasasEnRangoDePrecio;
+		return resultado;
 	}
 
 	public String buscarPropiedadesPorPrecio(Double rango1, Double rango2) {
