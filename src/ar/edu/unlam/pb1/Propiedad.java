@@ -1,7 +1,8 @@
 package ar.edu.unlam.pb1;
 
-public abstract class Propiedad {
+public abstract class Propiedad implements Comparable<Propiedad>{
 	protected static Integer contador = 1;
+	private Integer codigo;
 	private String calle;
 	private Integer numero;
 	private String ciudad;
@@ -9,7 +10,7 @@ public abstract class Propiedad {
 	private Boolean estaDisponible;
 	private TIPO_DE_OPERACION tipo;
 
-	public Propiedad(String calle, int numero, String ciudad, double precio, boolean estaDisponible,
+	public Propiedad(String calle, Integer numero, String ciudad, Double precio, Boolean estaDisponible,
 			TIPO_DE_OPERACION tipo) {
 		this.calle = calle;
 		this.numero = numero;
@@ -17,6 +18,12 @@ public abstract class Propiedad {
 		this.precio = precio;
 		this.estaDisponible = estaDisponible;
 		this.tipo = tipo;
+		this.codigo = contador;
+		contador++;
+	}
+
+	public Integer getCodigo() {
+		return codigo;
 	}
 
 	public String getCalle() {
@@ -27,7 +34,7 @@ public abstract class Propiedad {
 		this.calle = calle;
 	}
 
-	public int getNumero() {
+	public Integer getNumero() {
 		return numero;
 	}
 
@@ -43,7 +50,7 @@ public abstract class Propiedad {
 		this.ciudad = ciudad;
 	}
 
-	public double getPrecio() {
+	public Double getPrecio() {
 		return precio;
 	}
 
@@ -51,7 +58,7 @@ public abstract class Propiedad {
 		this.precio = precio;
 	}
 
-	public boolean isEstaDisponible() {
+	public Boolean getEstaDisponible() {
 		return estaDisponible;
 	}
 
@@ -71,5 +78,11 @@ public abstract class Propiedad {
 	public String toString() {
 		return "Propiedad calle=" + calle + ", numero=" + numero + ", ciudad=" + ciudad + "\n";
 	}
+
+	@Override
+	public int compareTo(Propiedad o) {
+		return this.precio.compareTo(o.getPrecio());
+	}
 	
+
 }

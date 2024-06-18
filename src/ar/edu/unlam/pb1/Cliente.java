@@ -3,17 +3,14 @@ package ar.edu.unlam.pb1;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Cliente {
+public class Cliente{
 	private Integer dni;
 	private String nombre;
 	private String apellido;
 	private Integer telefono;
 	private String mail;
-	private ArrayList<Campo> campos;
-	private ArrayList<Casa> casas;
-	private ArrayList<Departamento> departamentos;
-	private ArrayList<Ph> phs;
-	private ArrayList<Terreno> terrenos;
+	private ArrayList<Propiedad> propiedades;
+	private ArrayList<Propiedad> propiedadesAlquiladas;
 
 	public Cliente(Integer dni, String nombre, String apellido, Integer telefono, String mail) {
 		this.dni = dni;
@@ -21,11 +18,8 @@ public class Cliente {
 		this.apellido = apellido;
 		this.telefono = telefono;
 		this.mail = mail;
-		this.campos = new ArrayList<>();
-		this.casas = new ArrayList<>();
-		this.departamentos = new ArrayList<>();
-		this.phs = new ArrayList<>();
-		this.terrenos = new ArrayList<>();
+		this.propiedades = new ArrayList<>();
+		this.setPropiedadesAlquiladas(new ArrayList<>());
 	}
 
 	public String getNombre() {
@@ -64,59 +58,37 @@ public class Cliente {
 		return dni;
 	}
 
-	public ArrayList<Campo> getCampos() {
-		return campos;
+	public ArrayList<Propiedad> getPropiedades() {
+		return propiedades;
+	}
+	
+	public ArrayList<Propiedad> getPropiedadesAlquiladas() {
+		return propiedadesAlquiladas;
 	}
 
-	public ArrayList<Casa> getCasas() {
-		return casas;
+	public void setPropiedadesAlquiladas(ArrayList<Propiedad> propiedadesAlquiladas) {
+		this.propiedadesAlquiladas = propiedadesAlquiladas;
 	}
 
-	public ArrayList<Departamento> getDepartamentos() {
-		return departamentos;
+	public Boolean agregarPosesionDePropiedadAlCliente(Propiedad nueva) {
+		return propiedades.add(nueva);
 	}
-
-	public ArrayList<Ph> getPhs() {
-		return phs;
+	
+	public Boolean eliminarPosesionDeLaPropiedad(Propiedad aEliminar) {
+		return propiedades.remove(aEliminar);
 	}
-
-	public ArrayList<Terreno> getTerrenos() {
-		return terrenos;
+	
+	public Boolean agregarPropiedadALaQueElClienteEsInquilino(Propiedad nueva) {
+		return propiedadesAlquiladas.add(nueva);
+	}
+	
+	public Boolean eliminarPropiedadALaQueElClienteEsInquilino(Propiedad aEliminar) {
+		return propiedadesAlquiladas.remove(aEliminar);
 	}
 
 	@Override
 	public String toString() {
 		return "Cliente [dni=" + dni + ", nombre=" + nombre + ", apellido=" + apellido + "]";
-	}
-
-	public Boolean agregarNuevoCampo(Campo nuevo) {
-		for (Campo actual : campos) {
-			if (actual == null) {
-				actual = nuevo;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public Boolean addCasa(Casa nueva) {
-		return casas.add(nueva);
-	}
-
-	public Boolean addDepto(Departamento nuevo) {
-		return departamentos.add(nuevo);
-	}
-
-	public Boolean addCampo(Campo nuevo) {
-		return campos.add(nuevo);
-	}
-
-	public Boolean addPh(Ph nuevo) {
-		return phs.add(nuevo);
-	}
-
-	public Boolean addTerreno(Terreno nuevo) {
-		return terrenos.add(nuevo);
 	}
 
 	@Override
