@@ -1,10 +1,9 @@
 package ar.edu.unlam.pb1;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
-public class Inmobiliaria {
+public class Inmobiliaria implements OperacionesEntrePropiedades{
 	private String nombre;
 	private String direccion;
 	private String eMail;
@@ -142,11 +141,11 @@ public class Inmobiliaria {
 		return cliente.agregarPosesionDePropiedadAlCliente(propiedadParaVender);
 
 	}
-
+	@Override
 	public void venderPropiedad(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) {
-		if (clientes.contains(comprador) && propiedadParaVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
-			if (clientes.contains(vendedor) && vendedor.getPropiedades().contains(propiedadParaVender)) {
-				if (propiedadParaVender.getEstaDisponible()) {
+		if (clientes.contains(comprador) && clientes.contains(vendedor)) {
+			if (vendedor.getPropiedades().contains(propiedadParaVender)) {
+				if (propiedadParaVender.getEstaDisponible() && propiedadParaVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
 					vendedor.eliminarPosesionDeLaPropiedad(propiedadParaVender);
 					comprador.agregarPosesionDePropiedadAlCliente(propiedadParaVender);
 					propiedadParaVender.setEstaDisponible(false);
@@ -156,12 +155,12 @@ public class Inmobiliaria {
 		}
 
 	}
-
+	@Override
 	public void alquilarPropiedad(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) {
-		if (clientes.contains(inquilino) && propiedadParaAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
-			if (clientes.contains(propietario) && propietario.getPropiedades().contains(propiedadParaAlquilar)) {
-				if (propiedadParaAlquilar.getEstaDisponible()) {
-					inquilino.agregarPropiedadALaQueElClienteEsInquilino(propiedadParaAlquilar);
+		if (clientes.contains(inquilino) && clientes.contains(propietario)  ) {
+			if (propietario.getPropiedades().contains(propiedadParaAlquilar)) {
+				if (propiedadParaAlquilar.getEstaDisponible() && propiedadParaAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
+					inquilino.agregarPropiedadAlInquilino(propiedadParaAlquilar);
 					propiedadParaAlquilar.setEstaDisponible(false);
 				}
 
@@ -169,22 +168,24 @@ public class Inmobiliaria {
 		}
 
 	}
-
-	public void permutarDosPropiedades(Cliente propietarioY, Cliente propietarioX, Propiedad propiedadY,
-			Propiedad propiedadX) {
-		if (clientes.contains(propietarioX) && clientes.contains(propietarioY)) {
-			if (propietarioX.getPropiedades().contains(propiedadX)
-					&& (propietarioY.getPropiedades().contains(propiedadY))) {
-				if (propiedadX.getTipo().equals(TIPO_DE_OPERACION.PERMUTA)
-						&& propiedadY.getTipo().equals(TIPO_DE_OPERACION.PERMUTA)) {
-					if (propiedadX.getEstaDisponible() && propiedadY.getEstaDisponible()) {
-						propietarioX.eliminarPosesionDeLaPropiedad(propiedadX);
-						propietarioY.eliminarPosesionDeLaPropiedad(propiedadY);
-						propietarioX.agregarPosesionDePropiedadAlCliente(propiedadY);
-						propietarioY.agregarPosesionDePropiedadAlCliente(propiedadX);
-						propiedadX.setEstaDisponible(false);
-						propiedadY.setEstaDisponible(false);
-
+	@Override
+	public void permutarDosPropiedades(Cliente propietarioA, Cliente propietarioB, Propiedad propiedadA,
+			Propiedad propiedadB) {
+		if (clientes.contains(propietarioB) && clientes.contains(propietarioA)) {
+			if (propietarioB.getPropiedades().contains(propiedadB)
+					&& (propietarioA.getPropiedades().contains(propiedadA))) {
+				if (propiedadB.getTipo().equals(TIPO_DE_OPERACION.PERMUTA)
+						&& propiedadA.getTipo().equals(TIPO_DE_OPERACION.PERMUTA)) {
+					if (propiedadB.getEstaDisponible() && propiedadA.getEstaDisponible()) {
+						
+						propietarioA.eliminarPosesionDeLaPropiedad(propiedadA);
+						propietarioB.eliminarPosesionDeLaPropiedad(propiedadB);
+						
+						propietarioA.agregarPosesionDePropiedadAlCliente(propiedadB);
+						propietarioB.agregarPosesionDePropiedadAlCliente(propiedadA);
+						
+						propiedadA.setEstaDisponible(false);
+						propiedadB.setEstaDisponible(false);
 					}
 				}
 			}
@@ -207,12 +208,12 @@ public class Inmobiliaria {
 	}
 
 	public ArrayList<Propiedad> ordenarPropiedadesPorPrecio() {
-		Collections.sort(propiedades);
+		propiedades.sort(null);
 		return propiedades;
 	}
 
 	public ArrayList<Propiedad> ordenarPropiedadesPorPrecio(ArrayList<Propiedad> propiedadesAOrdenar) {
-		Collections.sort(propiedadesAOrdenar);
+		propiedadesAOrdenar.sort(null);
 		return propiedadesAOrdenar;
 	}
 

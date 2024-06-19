@@ -3,7 +3,7 @@ package ar.edu.unlam.pb1;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Cliente{
+public class Cliente implements Inquilino{
 	private Integer dni;
 	private String nombre;
 	private String apellido;
@@ -19,7 +19,7 @@ public class Cliente{
 		this.telefono = telefono;
 		this.mail = mail;
 		this.propiedades = new ArrayList<>();
-		this.setPropiedadesAlquiladas(new ArrayList<>());
+		this.propiedadesAlquiladas= new ArrayList<>();
 	}
 
 	public String getNombre() {
@@ -62,12 +62,9 @@ public class Cliente{
 		return propiedades;
 	}
 	
+	@Override
 	public ArrayList<Propiedad> getPropiedadesAlquiladas() {
 		return propiedadesAlquiladas;
-	}
-
-	public void setPropiedadesAlquiladas(ArrayList<Propiedad> propiedadesAlquiladas) {
-		this.propiedadesAlquiladas = propiedadesAlquiladas;
 	}
 
 	public Boolean agregarPosesionDePropiedadAlCliente(Propiedad nueva) {
@@ -78,11 +75,12 @@ public class Cliente{
 		return propiedades.remove(aEliminar);
 	}
 	
-	public Boolean agregarPropiedadALaQueElClienteEsInquilino(Propiedad nueva) {
+	@Override
+	public Boolean agregarPropiedadAlInquilino(Propiedad nueva) {
 		return propiedadesAlquiladas.add(nueva);
 	}
-	
-	public Boolean eliminarPropiedadALaQueElClienteEsInquilino(Propiedad aEliminar) {
+	@Override
+	public Boolean eliminarPropiedadAlInquilino(Propiedad aEliminar) {
 		return propiedadesAlquiladas.remove(aEliminar);
 	}
 
