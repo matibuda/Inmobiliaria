@@ -90,7 +90,7 @@ public class PruebaunitariaAutomatiza {
 	@Test
 	public void queSePuedaAgregarUnClienteALaInmobiliaria() {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente matias = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente matias = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
 
 		assertTrue(inmoActual.agregarCliente(matias));
 		assertFalse(inmoActual.agregarCliente(matias));
@@ -99,19 +99,18 @@ public class PruebaunitariaAutomatiza {
 	@Test
 	public void queNoSePuedanAgregarDosClientesConUnMismoDni() {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente matias = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente juan = new Cliente(41709637, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
-
-		inmoActual.agregarCliente(matias);
-
+		Cliente matias = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente juan = new Inquilino(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		
+		assertTrue(inmoActual.agregarCliente(matias));
 		assertFalse(inmoActual.agregarCliente(juan));
 	}
 
 	@Test
-	public void queSePuedaRealizarLaVentaDeUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queSePuedaRealizarLaVentaDeUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente vendedor = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente comprador = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.VENTA);
 
@@ -120,18 +119,19 @@ public class PruebaunitariaAutomatiza {
 		inmoActual.agregarPropiedad(propiedadParaVender);
 
 		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); // el propietario A de la propiedad
-		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador); // venta / pasa del propietario A al B
-
-		assertEquals(0, vendedor.getPropiedades().size()); // el propietario A ya no posee esa propiedad
-		assertEquals(1, comprador.getPropiedades().size()); // el propietario B si
+//		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador); // venta / pasa del propietario A al B	
+		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		
+		assertFalse(vendedor.getPropiedades().contains(propiedadParaVender)); // el propietario A ya no posee esa propiedad
+		assertTrue(comprador.getPropiedades().contains(propiedadParaVender)); // el propietario B si
 
 	}
 
 	@Test
-	public void queSePuedaRealizarElAlquilerDeUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queSePuedaRealizarElAlquilerDeUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietario = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente inquilino = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietario = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente inquilino = new Inquilino(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.ALQUILER);
 
@@ -140,18 +140,18 @@ public class PruebaunitariaAutomatiza {
 		inmoActual.agregarPropiedad(propiedadParaAlquilar);
 
 		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
-		inmoActual.alquilarPropiedad(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.alquilar(propietario, propiedadParaAlquilar,inquilino);
 
-		assertEquals(1, propietario.getPropiedades().size());
-		assertEquals(1, inquilino.getPropiedadesAlquiladas().size());
+		assertTrue(propietario.getPropiedades().contains(propiedadParaAlquilar));
+		assertTrue(inquilino.getPropiedades().contains(propiedadParaAlquilar));
 
 	}
 
 	@Test
-	public void queSePuedaRealizarLaPermutaDeDosPropiedades() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queSePuedaRealizarLaPermutaDeDosPropiedades() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietarioA = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente propietarioB = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietarioA = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente propietarioB = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadA = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.PERMUTA);
 		Propiedad propiedadB = new Casa("Av Rivadavia", 15000, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.PERMUTA);
@@ -163,7 +163,7 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutarDosPropiedades(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
 
 		assertTrue(propietarioA.getPropiedades().contains(propiedadB));
 		assertTrue(propietarioB.getPropiedades().contains(propiedadA));
@@ -276,28 +276,30 @@ public class PruebaunitariaAutomatiza {
 	
 	// TEST DE MAS AGREGADOS POR MI
 	
-	@Test (expected = ClienteNoExistenteException.class)
-	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiUnoDeLosClientesNoExisteEnLaInmobiliaria() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	@Test (expected = TipoDeClienteErroneoException.class)
+	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiElTipoDeClienteEsErroneo() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente vendedor = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente comprador = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Inquilino(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.VENTA);
 		
-		//inmoActual.agregarCliente(propietario); NUNCA SE AGREGA EL PROPIETARIO
+		inmoActual.agregarCliente(comprador);
 		inmoActual.agregarCliente(vendedor);
 		inmoActual.agregarPropiedad(propiedadParaVender);
-		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender);
-		// AL QUERER VENDER LA PROPIEDAD PERO SIN AGREGAR EL CLIENTE COMPRADOR A LA INMOBILIARIA RESULTA EN LA EXCEPCION  ClienteNoExistenteException
-		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador);
+		
+
+		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
+		
+		inmoActual.vender(vendedor, propiedadParaVender, comprador);
 
 	}
 	
 	@Test (expected = PropiedadNoPoseidaPorElClienteException.class)
-	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiElClienteNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiElClienteNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente vendedor = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente comprador = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.VENTA);
 		
@@ -308,15 +310,15 @@ public class PruebaunitariaAutomatiza {
 		//NUNCA AGREGO LA PROPIEDAD AL CLIENTE VENDEDOR
 		//inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
 		
-		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador);
+		inmoActual.vender(vendedor, propiedadParaVender, comprador);
 
 	}
 	
 	@Test (expected = PropiedadNoDisponibleParaLaTransaccionException.class)
-	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiLaPropiedadNoEstaPuestaParaLaVentaOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiLaPropiedadNoEstaPuestaParaLaVentaOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente vendedor = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente comprador = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.ALQUILER);
 		// PUSE ALQUILER EN TIPO DE OPERACION EN VEZ DE VENTA LO QUE ME DEBERIA DAR LA EXCEPCION PropiedadNoDisponibleParaLaTransaccionException
@@ -327,32 +329,15 @@ public class PruebaunitariaAutomatiza {
 		
 		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender);
 		
-		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador);
+		inmoActual.vender(vendedor, propiedadParaVender, comprador);
 
 	}	
 	
-	@Test (expected=ClienteNoExistenteException.class)
-	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiUnoDeLosClientesNoExisteEnLaInmobiliaria() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
-		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietario = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente inquilino = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
-		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
-				TIPO_DE_OPERACION.ALQUILER);
-
-		//inmoActual.agregarCliente(propietario); NUNCA SE AGREGA EL CLIENTE PROPIETARIO
-		inmoActual.agregarCliente(inquilino);
-		inmoActual.agregarPropiedad(propiedadParaAlquilar);
-
-		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
-		inmoActual.alquilarPropiedad(propietario, propiedadParaAlquilar, inquilino);
-
-	}
-	
 	@Test (expected=PropiedadNoPoseidaPorElClienteException.class)
-	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiElPropietarioNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiElPropietarioNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietario = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente inquilino = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietario = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente inquilino = new Inquilino(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.ALQUILER);
 
@@ -362,15 +347,15 @@ public class PruebaunitariaAutomatiza {
 
 		//inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar); NUNCA SE AGREGA LA PROPIEDAD AL CLIENTE
 		
-		inmoActual.alquilarPropiedad(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
 
 	}
 	
 	@Test (expected=PropiedadNoDisponibleParaLaTransaccionException.class)
-	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiLaPropiedadNoEstaPuestaParaElAlquilerOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiLaPropiedadNoEstaPuestaParaElAlquilerOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietario = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente inquilino = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietario = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente inquilino = new Inquilino(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.VENTA);
 		//TIPO_DE_OPERACION.VENTA CUANDO DEBERIA SER TIPO_DE_OPERACION.ALQUILER
@@ -381,34 +366,54 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
 		
-		inmoActual.alquilarPropiedad(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
 
 	}
-	@Test (expected =ClienteNoExistenteException.class)
-	public void queNoSePuedaRealizarLaPermutaDeDosPropiedadesSiUnoDeLosClientesNoExisteEnLaInmobiliaria() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	
+	@Test (expected=TipoDeClienteErroneoException.class)
+	public void queNoSePuedaRealizarElAlquilerDeUnaPropiedadSiNoHayUnClienteInquilino() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietarioA = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente propietarioB = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietario = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente inquilino = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+
+		inmoActual.agregarCliente(propietario);
+		inmoActual.agregarCliente(inquilino);
+		inmoActual.agregarPropiedad(propiedadParaAlquilar);
+
+		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
+		
+		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+
+	}
+	
+	@Test (expected = TipoDeClienteErroneoException.class)
+	public void queNoSePuedaRealizarLaPermutaDeUnaPropiedadSiElTipoDeClienteEsErroneo() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente propietarioA = new Inquilino(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente propietarioB = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadA = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.PERMUTA);
 		Propiedad propiedadB = new Casa("Av Rivadavia", 15000, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.PERMUTA);
 
-		//inmoActual.agregarCliente(propietarioA); CLIENTE NO EXISTENTE
+		inmoActual.agregarCliente(propietarioA);
 		inmoActual.agregarCliente(propietarioB);
 		inmoActual.agregarPropiedad(propiedadA);
 		inmoActual.agregarPropiedad(propiedadB);
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutarDosPropiedades(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
 
 	}
 	
 	@Test (expected =PropiedadNoPoseidaPorElClienteException.class)
-	public void queNoSePuedaRealizarLaPermutaDeDosPropiedadesSiElClienteNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarLaPermutaDeDosPropiedadesSiElClienteNoPoseeLaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietarioA = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente propietarioB = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietarioA = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente propietarioB = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadA = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.PERMUTA);
 		Propiedad propiedadB = new Casa("Av Rivadavia", 15000, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.PERMUTA);
@@ -420,15 +425,15 @@ public class PruebaunitariaAutomatiza {
 
 		//inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA); CLIENTE A NO POSEE LA PROPIEDAD PARA PERMUTAR
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutarDosPropiedades(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
 
 	}
 	
 	@Test (expected =PropiedadNoDisponibleParaLaTransaccionException.class)
-	public void queNoSePuedaRealizarLaPermutaDeDosPropiedadesSiLaPropiedadNoEstaPuestaParaLaPermutaOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
+	public void queNoSePuedaRealizarLaPermutaDeDosPropiedadesSiLaPropiedadNoEstaPuestaParaLaPermutaOTengaComoEstadoNoDisponible() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		Cliente propietarioA = new Cliente(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
-		Cliente propietarioB = new Cliente(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente propietarioA = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente propietarioB = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadA = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true, TIPO_DE_OPERACION.PERMUTA);
 		Propiedad propiedadB = new Casa("Av Rivadavia", 15000, "Ramos Mejia", 100000.0, true,
 				TIPO_DE_OPERACION.VENTA);
@@ -441,7 +446,7 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutarDosPropiedades(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
 
 	}
 

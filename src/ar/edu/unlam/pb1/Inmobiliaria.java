@@ -3,12 +3,13 @@ package ar.edu.unlam.pb1;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Inmobiliaria implements OperacionesEntrePropiedades{
+public class Inmobiliaria{
 	private String nombre;
 	private String direccion;
 	private String eMail;
 	private Integer telefono;
 	private ArrayList<Propiedad> propiedades;
+	private ArrayList<Operacion> operaciones;
 	private HashSet<Cliente> clientes;
 
 	public Inmobiliaria(String nombre, String direccion, String eMail, Integer telefono) {
@@ -17,6 +18,7 @@ public class Inmobiliaria implements OperacionesEntrePropiedades{
 		this.eMail = eMail;
 		this.telefono = telefono;
 		this.propiedades = new ArrayList<>();
+		this.operaciones = new ArrayList<>();
 		this.clientes = new HashSet<>();
 	}
 
@@ -62,7 +64,16 @@ public class Inmobiliaria implements OperacionesEntrePropiedades{
 		}
 		return propiedades.add(nueva);
 	}
-
+	
+	private Boolean agregarOperacion(Operacion nueva) {
+		return operaciones.add(nueva);
+		
+	}
+	
+	public HashSet<Cliente> getClientes(){
+		return clientes;
+	}
+	
 	public ArrayList<Propiedad> getCasas() {
 		ArrayList<Propiedad> casas = new ArrayList<>();
 		for (Propiedad actual : propiedades) {
@@ -138,83 +149,26 @@ public class Inmobiliaria implements OperacionesEntrePropiedades{
 	}
 
 	public Boolean agregarPropiedadAlCliente(Cliente cliente, Propiedad propiedadParaVender) {
-		return cliente.agregarPosesionDePropiedadAlCliente(propiedadParaVender);
-
-	}
-	@Override
-	public void venderPropiedad(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) throws ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
-		if (!clientes.contains(comprador) || !clientes.contains(vendedor)) {
-			throw new ClienteNoExistenteException("el cliente nunca fue agregado a la inmobiliaria");
-		}
-			if (!vendedor.getPropiedades().contains(propiedadParaVender)) {
-				throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
-			}
-				if (!propiedadParaVender.getEstaDisponible() || !propiedadParaVender.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
-					throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
-				}
-					vendedor.eliminarPosesionDeLaPropiedad(propiedadParaVender);
-					comprador.agregarPosesionDePropiedadAlCliente(propiedadParaVender);
-					propiedadParaVender.setEstaDisponible(false);
+		return cliente.agregarPropiedad(propiedadParaVender);
 
 	}
 	
-	@Override
-	public void alquilarPropiedad(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) throws ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
-		if (!clientes.contains(inquilino) || !clientes.contains(propietario)) {
-			throw new ClienteNoExistenteException("el cliente nunca fue agregado a la inmobiliaria");
-		}
-			if (!propietario.getPropiedades().contains(propiedadParaAlquilar)) {
-				throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
-			}
-				if (!propiedadParaAlquilar.getEstaDisponible() || !propiedadParaAlquilar.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
-					throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
-				}
-					inquilino.agregarPropiedadAlInquilino(propiedadParaAlquilar);
-					propiedadParaAlquilar.setEstaDisponible(false);
-
-	}
-
-	@Override
-	public void permutarDosPropiedades(Cliente propietarioA, Cliente propietarioB, Propiedad propiedadA, Propiedad propiedadB) throws ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException {
-		if (!clientes.contains(propietarioB) || !clientes.contains(propietarioA)) {
-			throw new ClienteNoExistenteException("el cliente nunca fue agregado a la inmobiliaria");
-		}
-			if (!propietarioB.getPropiedades().contains(propiedadB) || !propietarioA.getPropiedades().contains(propiedadA)) {
-				throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
-			}
-				if (!propiedadB.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadA.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadB.getEstaDisponible() || !propiedadA.getEstaDisponible()) {
-					throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
-				}
-						propietarioA.eliminarPosesionDeLaPropiedad(propiedadA);
-						propietarioB.eliminarPosesionDeLaPropiedad(propiedadB);
-						
-						propietarioA.agregarPosesionDePropiedadAlCliente(propiedadB);
-						propietarioB.agregarPosesionDePropiedadAlCliente(propiedadA);
-						
-						propiedadA.setEstaDisponible(false);
-						propiedadB.setEstaDisponible(false);
-
+	public void vender(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Venta nueva = new Venta(vendedor,propiedadParaVender,comprador);
+		nueva.ejecutar();
+		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
 	}
 	
-	public void permutarDosPropiedadesConExepciones(Cliente propietarioA, Cliente propietarioB, Propiedad propiedadA,Propiedad propiedadB) throws ClienteNoExistenteException, PropiedadNoPoseidaPorElClienteException {
-		if (!clientes.contains(propietarioB) || !clientes.contains(propietarioA)) {
-			throw new ClienteNoExistenteException("el cliente nunca fue agregado a la inmobiliaria");
-		}
-			if (!propietarioB.getPropiedades().contains(propiedadB) || !propietarioA.getPropiedades().contains(propiedadA)) {
-				throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
-			}
-				if (!propiedadB.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadA.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadB.getEstaDisponible() || !propiedadA.getEstaDisponible()) {
-					
-				}
-						propietarioA.eliminarPosesionDeLaPropiedad(propiedadA);
-						propietarioB.eliminarPosesionDeLaPropiedad(propiedadB);
-						
-						propietarioA.agregarPosesionDePropiedadAlCliente(propiedadB);
-						propietarioB.agregarPosesionDePropiedadAlCliente(propiedadA);
-						
-						propiedadA.setEstaDisponible(false);
-						propiedadB.setEstaDisponible(false);
-
+	public void alquilar(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Alquiler nueva = new Alquiler(propietario,propiedadParaAlquilar,inquilino);
+		nueva.ejecutar();
+		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
+	}
+	
+	public void permutar(Cliente propietarioA,Cliente propietarioB,Propiedad propiedadA, Propiedad propiedadB) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Permuta nueva = new Permuta(propietarioA,propietarioB,propiedadA,propiedadB);
+		nueva.ejecutar();
+		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
 	}
 
 	public ArrayList<Propiedad> buscarPropiedadesPorRangoDePrecio(Double rangoDePrecioMenor, Double rangoDePrecioMayor) throws SinResultadosException {

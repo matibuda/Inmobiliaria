@@ -3,14 +3,13 @@ package ar.edu.unlam.pb1;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Cliente implements Inquilino{
+public abstract class Cliente{
 	private Integer dni;
 	private String nombre;
 	private String apellido;
 	private Integer telefono;
 	private String mail;
 	private ArrayList<Propiedad> propiedades;
-	private ArrayList<Propiedad> propiedadesAlquiladas;
 
 	public Cliente(Integer dni, String nombre, String apellido, Integer telefono, String mail) {
 		this.dni = dni;
@@ -19,7 +18,6 @@ public class Cliente implements Inquilino{
 		this.telefono = telefono;
 		this.mail = mail;
 		this.propiedades = new ArrayList<>();
-		this.propiedadesAlquiladas= new ArrayList<>();
 	}
 
 	public String getNombre() {
@@ -61,27 +59,13 @@ public class Cliente implements Inquilino{
 	public ArrayList<Propiedad> getPropiedades() {
 		return propiedades;
 	}
-	
-	@Override
-	public ArrayList<Propiedad> getPropiedadesAlquiladas() {
-		return propiedadesAlquiladas;
-	}
 
-	public Boolean agregarPosesionDePropiedadAlCliente(Propiedad nueva) {
+	public Boolean agregarPropiedad(Propiedad nueva) {
 		return propiedades.add(nueva);
 	}
 	
-	public Boolean eliminarPosesionDeLaPropiedad(Propiedad aEliminar) {
+	public Boolean eliminarPropiedad(Propiedad aEliminar) {
 		return propiedades.remove(aEliminar);
-	}
-	
-	@Override
-	public Boolean agregarPropiedadAlInquilino(Propiedad nueva) {
-		return propiedadesAlquiladas.add(nueva);
-	}
-	@Override
-	public Boolean eliminarPropiedadAlInquilino(Propiedad aEliminar) {
-		return propiedadesAlquiladas.remove(aEliminar);
 	}
 
 	@Override
@@ -93,14 +77,12 @@ public class Cliente implements Inquilino{
 	public int hashCode() {
 		return Objects.hash(dni);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Cliente))
 			return false;
 		Cliente other = (Cliente) obj;
 		return Objects.equals(dni, other.dni);
