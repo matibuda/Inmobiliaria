@@ -311,14 +311,14 @@ public class PruebaunitariaAutomatiza {
 		Cliente propietarioActual = inmoActual.buscarPropietario(propiedadParaVender);
 		assertEquals(tercero, propietarioActual);
 		
-		// en este test busco al propietario sin usar la coleccion de operaciones, la cual a mi parecer hace dificil el acceso a la informacion
-		// para como estaba planteado el tp desde un principio
+		// siento que esta es la forma mas simple de acceder al propietario de x propiedad
+		// sin importar la operacion que se haya hecho
 	}
 
 // TEST DE MAS AGREGADOS POR MI PROBANDO LAS OPERACIONES
 	
 	@Test 
-	public void queSePuedaSaberQuienEnCuantasOperacionesParticipoUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+	public void queSePuedaSaberEnCuantasOperacionesParticipoUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
 		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
 		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
@@ -350,6 +350,9 @@ public class PruebaunitariaAutomatiza {
 		
 		Cliente anterior = inmoActual.buscarElPropietarioAnteriorDeUnaPropiedadVendida(propiedadParaVender);
 		assertEquals(vendedor, anterior);
+		
+		// con la coleccion de operacion puedo acceder a este tipo de informacion
+		// diferente a la coleccion de propiedad en clientes que solo me dice quien la posee
 	}
 	
 	@Test 
@@ -368,8 +371,12 @@ public class PruebaunitariaAutomatiza {
 		inmoActual.agregarPropiedadAlCliente(primero, propiedadParaVender); 
 		
 		inmoActual.operar(new Venta(primero, propiedadParaVender, segundo));
-		// si quisiera cambiarle el precio a la propiedad y no el estaDispoble, deberia cambiarle el equals a propiedades
-		// ignorando el precio y para seguir teniendo un registro en operaciones de la misma propiedad con diferentes precios
+//		si quisiera tener un fiel registro de operaciones deberia aplicar hashcode y equals en propiedades
+//		para que en el metodo de busqueda (buscarLasOperacionesEnLasQueParticipoDichaPropiedad)
+//		filtre por los atributos que yo considere (ignorando el precio) y no por direccion de memoria
+//		entreguando una lista de todas las veces que se realizaron operaciones en esa propiedad
+//		en vez de setear el estaDisponible en true
+		
 		propiedadParaVender.setEstaDisponible(true);//el actual propietario (segundo) la vuelve a poner en venta
 		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
 		

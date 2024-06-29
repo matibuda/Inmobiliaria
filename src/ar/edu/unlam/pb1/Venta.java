@@ -26,7 +26,7 @@ public class Venta implements Operacion {
 				throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
 			}
 				if (!enVenta.getEstaDisponible() || !enVenta.getTipo().equals(TIPO_DE_OPERACION.VENTA)) {
-					// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el atributo previamente cargado
+					// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el deseo del cliente
 					throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
 				}
 					

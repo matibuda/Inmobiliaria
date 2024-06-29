@@ -25,7 +25,7 @@ public class Alquiler implements Operacion {
 			throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
 		}
 			if (!enAlquiler.getEstaDisponible() || !enAlquiler.getTipo().equals(TIPO_DE_OPERACION.ALQUILER)) {
-				// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el atributo previamente cargado
+				// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el deseo del cliente
 				throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
 			}
 				inquilino.agregarPropiedadAlCliente(enAlquiler);

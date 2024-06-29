@@ -55,7 +55,8 @@ public class Inmobiliaria{
 	}
 
 	public Boolean agregarPropiedad(Propiedad nueva) throws UmbralMinimoNoAlcanzadoException {
-//		el enum TIPO_DE_OPERACION me permite diferenciar una propiedad en alquiler a la hora de agregarla a la inmobiliaria ya que deberian tener umbrales de precio muy diferentes
+//		el enum TIPO_DE_OPERACION me permite diferenciar una propiedad en alquiler a la hora de agregarla 
+//		ya que deberian tener umbrales de precio muy diferentes
 		if((nueva.getTipo()==TIPO_DE_OPERACION.VENTA || nueva.getTipo()==TIPO_DE_OPERACION.PERMUTA ) && nueva.getPrecio()<10000.0) {
 			throw new UmbralMinimoNoAlcanzadoException("La propiedad que intenta añadir no supera el umbral minimo de venta");
 		}
@@ -178,23 +179,25 @@ public class Inmobiliaria{
 		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones 
 	}
 	
-	// estos metodos de aca hacen lo mismo que "operar(Operacion nueva)" pero separados por cada operacion
+// 		estos metodos de aca hacen lo mismo que "operar(Operacion nueva)" 
+//		pero separados por cada operacion
+	
 	public void vender(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Operacion nueva = new Venta(vendedor,propiedadParaVender,comprador);
 		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones
 	}
 	
 	public void alquilar(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Operacion nueva = new Alquiler(propietario,propiedadParaAlquilar,inquilino);
 		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones
 	}
 	
 	public void permutar(Cliente propietarioA,Cliente propietarioB,Propiedad propiedadA, Propiedad propiedadB) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		Operacion nueva = new Permuta(propietarioA,propietarioB,propiedadA,propiedadB);
 		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones 
 	}
 
 	public ArrayList<Propiedad> buscarPropiedadesPorRangoDePrecio(Double rangoDePrecioMenor, Double rangoDePrecioMayor) throws SinResultadosException {
@@ -305,7 +308,8 @@ public class Inmobiliaria{
 		return permutas;
 		
 	}
-
+//	podria haber agregado getPropiedad() en "Operacion" y en permuta hacer la distincion de que devuelva 
+//	un ArrayListz<Propiedad> con ambas propiedades en vez de solo una pero preferi aplicar el casteo
 	public ArrayList<Operacion> buscarLasOperacionesEnLasQueParticipoDichaPropiedad(Propiedad propiedad) {
 		ArrayList<Operacion> operacionesEnLasQueParticipoLaPropiedadBuscada = new ArrayList<Operacion>();
 		for(Operacion actual:operaciones) {
@@ -333,7 +337,7 @@ public class Inmobiliaria{
 	public Cliente buscarElPropietarioAnteriorDeUnaPropiedadVendida(Propiedad propiedad) {
 		ArrayList<Operacion> operacionesDeLaPropiedad = buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedad);
 		operacionesDeLaPropiedad = getVentas(operacionesDeLaPropiedad);
-		//Como ArrayList apila significa que la ultima es la mas reciente (por ende la ultima venta que tuvo esa propiedad)
+//		Como ArrayList apila significa que la ultima es la mas reciente (por ende la ultima venta que tuvo esa propiedad)
 		Operacion ultima = operacionesDeLaPropiedad.getLast();
 		
 		
@@ -343,7 +347,7 @@ public class Inmobiliaria{
 	public Cliente buscarElPrimerClienteEnSerPropietarioDeEstaPropiedad(Propiedad propiedad) {
 		ArrayList<Operacion> operacionesDeLaPropiedad = buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedad);
 		operacionesDeLaPropiedad = getVentas(operacionesDeLaPropiedad);
-		//Como ArrayList apila significa que la primera es la mas vieja operacion que tuvo la propiedad 
+//		Como ArrayList apila significa que la primera es la operacion mas vieja que tuvo la propiedad 
 		Operacion primera = operacionesDeLaPropiedad.getFirst();
 		
 		
@@ -353,13 +357,15 @@ public class Inmobiliaria{
 	public Cliente buscarPropietarioActualLuegoDeUnaVenta(Propiedad propiedad) {
 		ArrayList<Operacion> operacionesDeLaPropiedad = buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedad);
 		operacionesDeLaPropiedad = getVentas(operacionesDeLaPropiedad);
-		//Como ArrayList apila significa que la ultima es la mas reciente (por ende la ultima venta que tuvo esa propiedad)
+		
 		Operacion ultima = operacionesDeLaPropiedad.getLast();
 		
 		
 		return ((Venta)ultima).getComprador();
 	}
-	// buscar el propietario en ventas y alquiler es simple pero para permuta se acompleja mas 
-	// por lo menos en la forma en la que yo encare como un cliente posee la propiedad de una casa,depto,etc.
+//	estos metodos de operacion estan hechos tratando de reemplazar a la coleccion de propiedades en clientes
+//	como fue mencionado en las correcciones
+//	buscar el propietario en ventas y alquiler es simple pero para permuta se acompleja mas 
+//	por lo menos en la forma en la que yo encare como un cliente posee la propiedad de una casa,depto,etc.
 
 }
