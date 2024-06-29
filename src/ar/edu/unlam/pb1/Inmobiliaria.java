@@ -59,8 +59,12 @@ public class Inmobiliaria{
 	}
 
 	public Boolean agregarPropiedad(Propiedad nueva) throws UmbralMinimoNoAlcanzadoException {
-		if(nueva.getTipo()==TIPO_DE_OPERACION.VENTA && nueva.getPrecio()<10000.0) {
+//		el enum TIPO_DE_OPERACION me permite diferenciar una propiedad en alquiler a la hora de agregarla a la inmobiliaria ya que deberian tener umbrales de precio muy diferentes
+		if((nueva.getTipo()==TIPO_DE_OPERACION.VENTA || nueva.getTipo()==TIPO_DE_OPERACION.PERMUTA ) && nueva.getPrecio()<10000.0) {
 			throw new UmbralMinimoNoAlcanzadoException("La propiedad que intenta añadir no supera el umbral minimo de venta");
+		}
+		if(nueva.getTipo()==TIPO_DE_OPERACION.ALQUILER && nueva.getPrecio()<1000) {
+			throw new UmbralMinimoNoAlcanzadoException("La propiedad que intenta añadir no supera el umbral minimo de alquiler");
 		}
 		return propiedades.add(nueva);
 	}
@@ -152,23 +156,28 @@ public class Inmobiliaria{
 		return cliente.agregarPropiedad(propiedadParaVender);
 
 	}
+	public void operar(Operacion nueva) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		nueva.ejecutar(); // si aca se produce una excepcion
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
+	}
 	
+	// estos metodos de aca hacen lo mismo que "operar(Operacion nueva)" pero separados por cada operacion
 	public void vender(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Venta nueva = new Venta(vendedor,propiedadParaVender,comprador);
-		nueva.ejecutar();
-		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
+		Operacion nueva = new Venta(vendedor,propiedadParaVender,comprador);
+		nueva.ejecutar(); // si aca se produce una excepcion
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
 	}
 	
 	public void alquilar(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Alquiler nueva = new Alquiler(propietario,propiedadParaAlquilar,inquilino);
-		nueva.ejecutar();
-		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
+		Operacion nueva = new Alquiler(propietario,propiedadParaAlquilar,inquilino);
+		nueva.ejecutar(); // si aca se produce una excepcion
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
 	}
 	
 	public void permutar(Cliente propietarioA,Cliente propietarioB,Propiedad propiedadA, Propiedad propiedadB) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Permuta nueva = new Permuta(propietarioA,propietarioB,propiedadA,propiedadB);
-		nueva.ejecutar();
-		agregarOperacion(nueva); // si tira una excepcion nunca la va a agregar a la coleccion de operaciones (ya que fallo)
+		Operacion nueva = new Permuta(propietarioA,propietarioB,propiedadA,propiedadB);
+		nueva.ejecutar(); // si aca se produce una excepcion
+		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones si es que tiene excepciones
 	}
 
 	public ArrayList<Propiedad> buscarPropiedadesPorRangoDePrecio(Double rangoDePrecioMenor, Double rangoDePrecioMayor) throws SinResultadosException {

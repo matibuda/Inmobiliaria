@@ -92,7 +92,7 @@ public class PruebaunitariaAutomatiza {
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
 		Cliente matias = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
 
-		assertTrue(inmoActual.agregarCliente(matias));
+		inmoActual.agregarCliente(matias);
 		assertFalse(inmoActual.agregarCliente(matias));
 	}
 
@@ -119,8 +119,9 @@ public class PruebaunitariaAutomatiza {
 		inmoActual.agregarPropiedad(propiedadParaVender);
 
 		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); // el propietario A de la propiedad
-//		inmoActual.venderPropiedad(vendedor, propiedadParaVender, comprador); // venta / pasa del propietario A al B	
-		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		
+		//inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
 		
 		assertFalse(vendedor.getPropiedades().contains(propiedadParaVender)); // el propietario A ya no posee esa propiedad
 		assertTrue(comprador.getPropiedades().contains(propiedadParaVender)); // el propietario B si
@@ -140,7 +141,9 @@ public class PruebaunitariaAutomatiza {
 		inmoActual.agregarPropiedad(propiedadParaAlquilar);
 
 		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
-		inmoActual.alquilar(propietario, propiedadParaAlquilar,inquilino);
+		
+//		inmoActual.alquilar(propietario, propiedadParaAlquilar,inquilino);
+		inmoActual.operar(new Alquiler(propietario, propiedadParaAlquilar,inquilino));
 
 		assertTrue(propietario.getPropiedades().contains(propiedadParaAlquilar));
 		assertTrue(inquilino.getPropiedades().contains(propiedadParaAlquilar));
@@ -163,7 +166,9 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		
+		//inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.operar(new Permuta(propietarioA, propietarioB, propiedadA, propiedadB));
 
 		assertTrue(propietarioA.getPropiedades().contains(propiedadB));
 		assertTrue(propietarioB.getPropiedades().contains(propiedadA));
@@ -269,12 +274,19 @@ public class PruebaunitariaAutomatiza {
 	@Test  (expected =UmbralMinimoNoAlcanzadoException.class )
 	public void queAlIntentarGuardarUnaPropiedadParaLaVentaCuyoImporteEstaPorDebajoDelUmbral10000SeArrojeLaExcepcionUmbralMinimoNoAlcanzadoException() throws UmbralMinimoNoAlcanzadoException{
 		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
-		inmoActual.agregarPropiedad(new Departamento("Av de Mayo", 2555, "1A", "Ramos Mejia", 200.0, true, TIPO_DE_OPERACION.VENTA));
+		inmoActual.agregarPropiedad(new Departamento("Av de Mayo", 2555, "1A", "Ramos Mejia", 9000.0, true, TIPO_DE_OPERACION.VENTA));
+		
+		
+	}
+	@Test  (expected =UmbralMinimoNoAlcanzadoException.class )
+	public void queAlIntentarGuardarUnaPropiedadParaElAlquilerCuyoImporteEstaPorDebajoDelUmbral1000SeArrojeLaExcepcionUmbralMinimoNoAlcanzadoException() throws UmbralMinimoNoAlcanzadoException{
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		inmoActual.agregarPropiedad(new Departamento("Av de Mayo", 2555, "1A", "Ramos Mejia", 900.0, true, TIPO_DE_OPERACION.ALQUILER));
 		
 		
 	}
 	
-	// TEST DE MAS AGREGADOS POR MI
+ // TEST DE MAS AGREGADOS POR MI PROBANDO LAS EXCEPCIONES
 	
 	@Test (expected = TipoDeClienteErroneoException.class)
 	public void queNoSePuedaRealizarLaVentaDeUnaPropiedadSiElTipoDeClienteEsErroneo() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
@@ -291,7 +303,8 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
 		
-		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+//		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
 
 	}
 	
@@ -310,7 +323,8 @@ public class PruebaunitariaAutomatiza {
 		//NUNCA AGREGO LA PROPIEDAD AL CLIENTE VENDEDOR
 		//inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
 		
-		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+//		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
 
 	}
 	
@@ -329,7 +343,9 @@ public class PruebaunitariaAutomatiza {
 		
 		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender);
 		
-		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+//		inmoActual.vender(vendedor, propiedadParaVender, comprador);
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
+		
 
 	}	
 	
@@ -347,7 +363,8 @@ public class PruebaunitariaAutomatiza {
 
 		//inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar); NUNCA SE AGREGA LA PROPIEDAD AL CLIENTE
 		
-		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+//		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.operar(new Alquiler(propietario, propiedadParaAlquilar, inquilino));
 
 	}
 	
@@ -366,7 +383,8 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
 		
-		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+//		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.operar(new Alquiler(propietario, propiedadParaAlquilar, inquilino));
 
 	}
 	
@@ -376,7 +394,7 @@ public class PruebaunitariaAutomatiza {
 		Cliente propietario = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
 		Cliente inquilino = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
 		Propiedad propiedadParaAlquilar = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
-				TIPO_DE_OPERACION.VENTA);
+				TIPO_DE_OPERACION.ALQUILER);
 		
 
 		inmoActual.agregarCliente(propietario);
@@ -385,7 +403,8 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietario, propiedadParaAlquilar);
 		
-		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+//		inmoActual.alquilar(propietario, propiedadParaAlquilar, inquilino);
+		inmoActual.operar(new Alquiler(propietario, propiedadParaAlquilar, inquilino));
 
 	}
 	
@@ -405,7 +424,9 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		
+//		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.operar(new Permuta(propietarioA, propietarioB, propiedadA, propiedadB));
 
 	}
 	
@@ -425,7 +446,9 @@ public class PruebaunitariaAutomatiza {
 
 		//inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA); CLIENTE A NO POSEE LA PROPIEDAD PARA PERMUTAR
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		
+//		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.operar(new Permuta(propietarioA, propietarioB, propiedadA, propiedadB));
 
 	}
 	
@@ -446,7 +469,9 @@ public class PruebaunitariaAutomatiza {
 
 		inmoActual.agregarPropiedadAlCliente(propietarioA, propiedadA);
 		inmoActual.agregarPropiedadAlCliente(propietarioB, propiedadB);
-		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		
+//		inmoActual.permutar(propietarioA, propietarioB, propiedadA, propiedadB);
+		inmoActual.operar(new Permuta(propietarioA, propietarioB, propiedadA, propiedadB));
 
 	}
 
