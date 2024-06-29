@@ -19,7 +19,7 @@ public class Venta implements Operacion {
 	public void ejecutar() throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		
 		if(vendedor instanceof Inquilino || comprador instanceof Inquilino ) {
-			throw new TipoDeClienteErroneoException("El Cliente NO tiene posesion sobre esta Propiedad");
+			throw new TipoDeClienteErroneoException("El cliente no tiene permitido hacer esta operacion");
 		}
 		
 			if (!vendedor.getPropiedades().contains(enVenta)) {
@@ -30,8 +30,8 @@ public class Venta implements Operacion {
 					throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
 				}
 					
-					vendedor.eliminarPropiedad(enVenta);
-					comprador.agregarPropiedad(enVenta);
+					vendedor.eliminarPropiedadAlCliente(enVenta);
+					comprador.agregarPropiedadAlCliente(enVenta);
 					enVenta.setEstaDisponible(false);
 
 	}
@@ -44,12 +44,18 @@ public class Venta implements Operacion {
 		return comprador;
 	}
 
-	public Propiedad getEnVenta() {
+	public Propiedad getPropiedad() {
 		return enVenta;
 	}
 
 	public LocalDate getFecha() {
 		return fecha;
+	}
+
+	@Override
+	public String toString() {
+		return "Venta [vendedor=" + vendedor + ", comprador=" + comprador + ", propiedad=" + enVenta + ", fecha=" + fecha
+				+ "]";
 	}
 	
 	

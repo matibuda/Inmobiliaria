@@ -104,6 +104,7 @@ public class PruebaunitariaAutomatiza {
 		
 		assertTrue(inmoActual.agregarCliente(matias));
 		assertFalse(inmoActual.agregarCliente(juan));
+		// el mismo cliente no puede ser propietario e inquilino
 	}
 
 	@Test
@@ -285,6 +286,144 @@ public class PruebaunitariaAutomatiza {
 		
 		
 	}
+	
+//	TEST DE MAS AGREGADOS POR MI 
+	
+	@Test 
+	public void queSePuedaSaberQuienEsElPropietarioActualDeUnaPropiedadLuegoDeUnaVentaUsandoLaColeccionDePropiedadesEnClientes() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente primero = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente segundo = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente tercero = new Propietario(25142154, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(primero);
+		inmoActual.agregarCliente(segundo);
+		inmoActual.agregarCliente(tercero);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(primero, propiedadParaVender); 
+		
+		inmoActual.operar(new Venta(primero, propiedadParaVender, segundo));
+		propiedadParaVender.setEstaDisponible(true);
+		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
+		
+		Cliente propietarioActual = inmoActual.buscarPropietario(propiedadParaVender);
+		assertEquals(tercero, propietarioActual);
+		
+		// en este test busco al propietario sin usar la coleccion de operaciones, la cual a mi parecer hace dificil el acceso a la informacion
+		// para como estaba planteado el tp desde un principio
+	}
+
+// TEST DE MAS AGREGADOS POR MI PROBANDO LAS OPERACIONES
+	
+	@Test 
+	public void queSePuedaSaberQuienEnCuantasOperacionesParticipoUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(comprador);
+		inmoActual.agregarCliente(vendedor);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
+		
+		assertEquals(1, inmoActual.buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedadParaVender).size());
+	}
+	
+	@Test 
+	public void queSePuedaSaberQuienFueElPropietarioAnteriorLuegoDeUnaVenta() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente vendedor = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente comprador = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(comprador);
+		inmoActual.agregarCliente(vendedor);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(vendedor, propiedadParaVender); 
+		inmoActual.operar(new Venta(vendedor, propiedadParaVender, comprador));
+		
+		Cliente anterior = inmoActual.buscarElPropietarioAnteriorDeUnaPropiedadVendida(propiedadParaVender);
+		assertEquals(vendedor, anterior);
+	}
+	
+	@Test 
+	public void queSePuedaSaberQuienFueElPropietarioAnteriorLuegoDeDosVenta() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente primero = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente segundo = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente tercero = new Propietario(25142154, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(primero);
+		inmoActual.agregarCliente(segundo);
+		inmoActual.agregarCliente(tercero);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(primero, propiedadParaVender); 
+		
+		inmoActual.operar(new Venta(primero, propiedadParaVender, segundo));
+		// si quisiera cambiarle el precio a la propiedad y no el estaDispoble, deberia cambiarle el equals a propiedades
+		// ignorando el precio y para seguir teniendo un registro en operaciones de la misma propiedad con diferentes precios
+		propiedadParaVender.setEstaDisponible(true);//el actual propietario (segundo) la vuelve a poner en venta
+		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
+		
+		Cliente anterior = inmoActual.buscarElPropietarioAnteriorDeUnaPropiedadVendida(propiedadParaVender);
+		assertEquals(segundo, anterior);
+		//el tercer cliente es el actual propietario de la propiedad por ende el cliente anterior es el segundo
+	}
+	
+	@Test 
+	public void queSePuedaSaberQuienFueElPrimerPropietarioLuegoVenderDosVecesUnaPropiedad() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente primero = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente segundo = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente tercero = new Propietario(25142154, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(primero);
+		inmoActual.agregarCliente(segundo);
+		inmoActual.agregarCliente(tercero);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(primero, propiedadParaVender); 
+		
+		inmoActual.operar(new Venta(primero, propiedadParaVender, segundo));
+		propiedadParaVender.setEstaDisponible(true);
+		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
+		
+		Cliente anterior = inmoActual.buscarElPrimerClienteEnSerPropietarioDeEstaPropiedad(propiedadParaVender);
+		assertEquals(primero, anterior);
+	}
+	
+	@Test 
+	public void queSePuedaSaberQuienEsElPropietarioActualDeUnaPropiedadLuegoDeUnaVentaUsandoLaColeccionDeOperaciones() throws UmbralMinimoNoAlcanzadoException, PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
+		Inmobiliaria inmoActual = new Inmobiliaria("Buda's", "Av Rivadavia", "inmobuda@gmail.com", 1124536582);
+		Cliente primero = new Propietario(41709637, "Matias", "Buda", 1124536582, "clienteBuda@gmail.com");
+		Cliente segundo = new Propietario(25145687, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Cliente tercero = new Propietario(25142154, "Juan", "Monteagudo", 1124536582, "clienteMonteagudo@gmail.com");
+		Propiedad propiedadParaVender = new Casa("Av de Mayo", 2555, "Ramos Mejia", 100000.0, true,
+				TIPO_DE_OPERACION.VENTA);
+		
+		inmoActual.agregarCliente(primero);
+		inmoActual.agregarCliente(segundo);
+		inmoActual.agregarCliente(tercero);
+		inmoActual.agregarPropiedad(propiedadParaVender);
+		inmoActual.agregarPropiedadAlCliente(primero, propiedadParaVender); 
+		
+		inmoActual.operar(new Venta(primero, propiedadParaVender, segundo));
+		propiedadParaVender.setEstaDisponible(true);
+		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
+		
+		Cliente propietarioActual = inmoActual.buscarPropietarioActualLuegoDeUnaVenta(propiedadParaVender);
+		assertEquals(tercero, propietarioActual);
+	}
+	
 	
  // TEST DE MAS AGREGADOS POR MI PROBANDO LAS EXCEPCIONES
 	

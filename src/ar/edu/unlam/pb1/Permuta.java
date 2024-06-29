@@ -19,7 +19,7 @@ public class Permuta implements Operacion {
 	@Override
 	public void ejecutar() throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
 		if(propietarioA instanceof Inquilino || propietarioB instanceof Inquilino ) {
-			throw new TipoDeClienteErroneoException("El Cliente NO tiene posesion sobre esta Propiedad");
+			throw new TipoDeClienteErroneoException("El cliente no tiene permitido hacer esta operacion");
 		}
 		
 		if (!propietarioB.getPropiedades().contains(propiedadB) || !propietarioA.getPropiedades().contains(propiedadA)) {
@@ -29,11 +29,11 @@ public class Permuta implements Operacion {
 				// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el atributo previamente cargado
 				throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
 			}
-					propietarioA.eliminarPropiedad(propiedadA);
-					propietarioB.eliminarPropiedad(propiedadB);
+					propietarioA.eliminarPropiedadAlCliente(propiedadA);
+					propietarioB.eliminarPropiedadAlCliente(propiedadB);
 					
-					propietarioA.agregarPropiedad(propiedadB);
-					propietarioB.agregarPropiedad(propiedadA);
+					propietarioA.agregarPropiedadAlCliente(propiedadB);
+					propietarioB.agregarPropiedadAlCliente(propiedadA);
 					
 					propiedadA.setEstaDisponible(false);
 					propiedadB.setEstaDisponible(false);
@@ -54,6 +54,12 @@ public class Permuta implements Operacion {
 	public LocalDate getFecha() {
 		return fecha;
 	}
+	@Override
+	public String toString() {
+		return "Permuta [propietarioA=" + propietarioA + ", propietarioB=" + propietarioB + ", propiedadA=" + propiedadA
+				+ ", propiedadB=" + propiedadB + ", fecha=" + fecha + "]";
+	}
+	
 	
 
 	}

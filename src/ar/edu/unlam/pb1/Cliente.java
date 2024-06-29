@@ -60,11 +60,11 @@ public abstract class Cliente{
 		return propiedades;
 	}
 
-	public Boolean agregarPropiedad(Propiedad nueva) {
+	public Boolean agregarPropiedadAlCliente(Propiedad nueva) {
 		return propiedades.add(nueva);
 	}
 	
-	public Boolean eliminarPropiedad(Propiedad aEliminar) {
+	public Boolean eliminarPropiedadAlCliente(Propiedad aEliminar) {
 		return propiedades.remove(aEliminar);
 	}
 
