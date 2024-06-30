@@ -9,18 +9,34 @@ public abstract class Propiedad implements Comparable<Propiedad>{
 	private Double precio;
 	private Boolean estaDisponible;
 	private TIPO_DE_OPERACION tipo;
+	private Cliente propietario;
 
 	public Propiedad(String calle, Integer numero, String ciudad, Double precio, Boolean estaDisponible,
-			TIPO_DE_OPERACION tipo) {
+			TIPO_DE_OPERACION tipo,Cliente propietario) {
 		this.calle = calle;
 		this.numero = numero;
 		this.ciudad = ciudad;
 		this.precio = precio;
 		this.estaDisponible = estaDisponible;
 		this.tipo = tipo;
+		this.propietario=propietario;
 		this.codigo = contador;
 		contador++;
 	}
+	
+	
+
+	public Cliente getPropietario() {
+		return propietario;
+	}
+
+
+
+	public void setPropietario(Cliente comprador) {
+		this.propietario = comprador;
+	}
+
+
 
 	public Integer getCodigo() {
 		return codigo;

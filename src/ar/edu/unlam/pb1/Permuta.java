@@ -9,31 +9,22 @@ public class Permuta implements Operacion {
 	private Propiedad propiedadB;
 	private LocalDate fecha;
 
-	public Permuta(Cliente propietarioA,Cliente propietarioB,Propiedad propiedadA, Propiedad propiedadB) {
-		this.propietarioA=propietarioA;
-		this.propietarioB=propietarioB;
+	public Permuta(Propiedad propiedadA, Propiedad propiedadB) {
+		this.propietarioA=propiedadA.getPropietario();
+		this.propietarioB=propiedadB.getPropietario();
 		this.propiedadA=propiedadA;
 		this.propiedadB=propiedadB;
 		this.fecha=LocalDate.now();
 	}
 	@Override
-	public void ejecutar() throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		if(propietarioA instanceof Inquilino || propietarioB instanceof Inquilino ) {
-			throw new TipoDeClienteErroneoException("El cliente no tiene permitido hacer esta operacion");
-		}
+	public void ejecutar() throws  PropiedadNoDisponibleParaLaTransaccionException{
 		
-		if (!propietarioB.getPropiedades().contains(propiedadB) || !propietarioA.getPropiedades().contains(propiedadA)) {
-			throw new PropiedadNoPoseidaPorElClienteException("El Cliente NO tiene posesion sobre esta Propiedad");
-		}
 			if (!propiedadB.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadA.getTipo().equals(TIPO_DE_OPERACION.PERMUTA) || !propiedadB.getEstaDisponible() || !propiedadA.getEstaDisponible()) {
 				// eliminando TIPO_DE_OPERACION lo unico que cambiaria es que las propiedades se prodan vender permutar o alquilar sin importar el deseo del cliente
 				throw new PropiedadNoDisponibleParaLaTransaccionException("Esta propiedad no se encuentra dispoble para la transaccion que desea realizar");
 			}
-					propietarioA.eliminarPropiedadAlCliente(propiedadA);
-					propietarioB.eliminarPropiedadAlCliente(propiedadB);
-					
-					propietarioA.agregarPropiedadAlCliente(propiedadB);
-					propietarioB.agregarPropiedadAlCliente(propiedadA);
+					propiedadA.setPropietario(propietarioB);
+					propiedadB.setPropietario(propietarioA);
 					
 					propiedadA.setEstaDisponible(false);
 					propiedadB.setEstaDisponible(false);

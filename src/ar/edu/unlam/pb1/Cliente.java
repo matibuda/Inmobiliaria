@@ -9,7 +9,6 @@ public abstract class Cliente{
 	private String apellido;
 	private Integer telefono;
 	private String mail;
-	private ArrayList<Propiedad> propiedades;
 
 	public Cliente(Integer dni, String nombre, String apellido, Integer telefono, String mail) {
 		this.dni = dni;
@@ -17,9 +16,7 @@ public abstract class Cliente{
 		this.apellido = apellido;
 		this.telefono = telefono;
 		this.mail = mail;
-		this.propiedades = new ArrayList<>();
 	}
-
 	public String getNombre() {
 		return nombre;
 	}
@@ -54,18 +51,6 @@ public abstract class Cliente{
 
 	public Integer getDni() {
 		return dni;
-	}
-
-	public ArrayList<Propiedad> getPropiedades() {
-		return propiedades;
-	}
-
-	public Boolean agregarPropiedadAlCliente(Propiedad nueva) {
-		return propiedades.add(nueva);
-	}
-	
-	public Boolean eliminarPropiedadAlCliente(Propiedad aEliminar) {
-		return propiedades.remove(aEliminar);
 	}
 
 	@Override

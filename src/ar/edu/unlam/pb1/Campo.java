@@ -4,8 +4,8 @@ public class Campo extends Propiedad {
 	private Double metrosCuadrados;
 
 	public Campo(String calle, Integer numero, String ciudad, Double precio, Double metrosCuadrados,
-			Boolean estaDisponible, TIPO_DE_OPERACION tipo) {
-		super(calle, numero, ciudad, precio, estaDisponible, tipo);
+			Boolean estaDisponible, TIPO_DE_OPERACION tipo,Cliente propietario) {
+		super(calle, numero, ciudad, precio, estaDisponible, tipo, propietario);
 		this.metrosCuadrados = metrosCuadrados;
 	}
 

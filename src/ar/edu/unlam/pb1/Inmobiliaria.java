@@ -54,7 +54,7 @@ public class Inmobiliaria{
 		this.telefono = telefono;
 	}
 
-	public Boolean agregarPropiedad(Propiedad nueva) throws UmbralMinimoNoAlcanzadoException {
+	public Boolean agregarPropiedad(Propiedad nueva) throws UmbralMinimoNoAlcanzadoException, TipoDeClienteErroneoException {
 //		el enum TIPO_DE_OPERACION me permite diferenciar una propiedad en alquiler a la hora de agregarla 
 //		ya que deberian tener umbrales de precio muy diferentes
 		if((nueva.getTipo()==TIPO_DE_OPERACION.VENTA || nueva.getTipo()==TIPO_DE_OPERACION.PERMUTA ) && nueva.getPrecio()<10000.0) {
@@ -62,6 +62,9 @@ public class Inmobiliaria{
 		}
 		if(nueva.getTipo()==TIPO_DE_OPERACION.ALQUILER && nueva.getPrecio()<1000) {
 			throw new UmbralMinimoNoAlcanzadoException("La propiedad que intenta añadir no supera el umbral minimo de alquiler");
+		}
+		if(nueva.getPropietario() instanceof Inquilino) {
+			throw new TipoDeClienteErroneoException("El inquilino no puede ser propietario");
 		}
 		return propiedades.add(nueva);
 	}
@@ -158,44 +161,7 @@ public class Inmobiliaria{
 		}
 		return promedio;
 	}
-	
-	public Cliente buscarPropietario(Propiedad propiedad) {		
-		for(Cliente actual:clientes) {
-			if (actual instanceof Propietario) {
-				if(actual.getPropiedades().contains(propiedad)) {
-					return actual;
-				}
-			}
-		}
-		return null;
-	}
-
-	public Boolean agregarPropiedadAlCliente(Cliente cliente, Propiedad propiedadParaVender) {
-		return cliente.agregarPropiedadAlCliente(propiedadParaVender);
-
-	}
 	public void operar(Operacion nueva) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones 
-	}
-	
-// 		estos metodos de aca hacen lo mismo que "operar(Operacion nueva)" 
-//		pero separados por cada operacion
-	
-	public void vender(Cliente vendedor, Propiedad propiedadParaVender, Cliente comprador) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Operacion nueva = new Venta(vendedor,propiedadParaVender,comprador);
-		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones
-	}
-	
-	public void alquilar(Cliente propietario, Propiedad propiedadParaAlquilar, Cliente inquilino) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Operacion nueva = new Alquiler(propietario,propiedadParaAlquilar,inquilino);
-		nueva.ejecutar(); // si aca se produce una excepcion
-		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones
-	}
-	
-	public void permutar(Cliente propietarioA,Cliente propietarioB,Propiedad propiedadA, Propiedad propiedadB) throws PropiedadNoPoseidaPorElClienteException, PropiedadNoDisponibleParaLaTransaccionException, TipoDeClienteErroneoException {
-		Operacion nueva = new Permuta(propietarioA,propietarioB,propiedadA,propiedadB);
 		nueva.ejecutar(); // si aca se produce una excepcion
 		agregarOperacion(nueva); //  nunca sera agregada a la coleccion de operaciones 
 	}
@@ -341,7 +307,7 @@ public class Inmobiliaria{
 		Operacion ultima = operacionesDeLaPropiedad.getLast();
 		
 		
-		return ((Venta)ultima).getVendedor();
+		return ((Venta)ultima).getPropietarioAnterior();
 	}
 
 	public Cliente buscarElPrimerClienteEnSerPropietarioDeEstaPropiedad(Propiedad propiedad) {
@@ -351,21 +317,11 @@ public class Inmobiliaria{
 		Operacion primera = operacionesDeLaPropiedad.getFirst();
 		
 		
-		return ((Venta)primera).getVendedor();
+		return ((Venta)primera).getPropietarioAnterior();
 	}
 	
-	public Cliente buscarPropietarioActualLuegoDeUnaVenta(Propiedad propiedad) {
-		ArrayList<Operacion> operacionesDeLaPropiedad = buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedad);
-		operacionesDeLaPropiedad = getVentas(operacionesDeLaPropiedad);
-		
-		Operacion ultima = operacionesDeLaPropiedad.getLast();
-		
-		
-		return ((Venta)ultima).getComprador();
+	public Cliente buscarPropietarioActualDeUnaPropiedad(Propiedad propiedad) {
+			return propiedad.getPropietario();
 	}
-//	estos metodos de operacion estan hechos tratando de reemplazar a la coleccion de propiedades en clientes
-//	como fue mencionado en las correcciones
-//	buscar el propietario en ventas y alquiler es simple pero para permuta se acompleja mas 
-//	por lo menos en la forma en la que yo encare como un cliente posee la propiedad de una casa,depto,etc.
 
 }

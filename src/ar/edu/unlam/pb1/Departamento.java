@@ -4,8 +4,8 @@ public class Departamento extends Propiedad {
 	private String pisoYNumero;
 
 	public Departamento(String calle, Integer numero, String pisoYNumero, String ciudad, Double precio,
-			Boolean estaDisponible, TIPO_DE_OPERACION tipo) {
-		super(calle, numero, ciudad, precio, estaDisponible, tipo);
+			Boolean estaDisponible, TIPO_DE_OPERACION tipo,Cliente propietario) {
+		super(calle, numero, ciudad, precio, estaDisponible, tipo, propietario);
 		this.pisoYNumero = pisoYNumero;
 
 	}
