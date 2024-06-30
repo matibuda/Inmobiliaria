@@ -308,7 +308,7 @@ public class PruebaunitariaAutomatiza {
 		propiedadParaVender.setEstaDisponible(true);
 		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
 		
-		Cliente propietarioActual = inmoActual.buscarPropietario(propiedadParaVender);
+		Cliente propietarioActual = inmoActual.buscarElPropietarioActualDeUnaPropiedad(propiedadParaVender);
 		assertEquals(tercero, propietarioActual);
 		
 		// siento que esta es la forma mas simple de acceder al propietario de x propiedad
@@ -427,9 +427,11 @@ public class PruebaunitariaAutomatiza {
 		propiedadParaVender.setEstaDisponible(true);
 		inmoActual.operar(new Venta(segundo, propiedadParaVender, tercero));
 		
-		Cliente propietarioActual = inmoActual.buscarPropietarioActualLuegoDeUnaVenta(propiedadParaVender);
+		Cliente propietarioActual = inmoActual.buscarElPropietarioActualDeUnaPropiedad(propiedadParaVender);
 		assertEquals(tercero, propietarioActual);
 	}
+//	Como busco al propietario de una propiedad en la coleccion de prop. dentro de clientes
+//	no afecta cuantas veces se venda una prop. ya que esta se va a ir traslandando de cliente en cliente
 	
 	
  // TEST DE MAS AGREGADOS POR MI PROBANDO LAS EXCEPCIONES

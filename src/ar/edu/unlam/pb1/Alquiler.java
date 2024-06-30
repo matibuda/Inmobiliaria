@@ -7,13 +7,15 @@ public class Alquiler implements Operacion {
 	private Cliente propietario;
 	private Cliente inquilino;
 	private Propiedad enAlquiler;
-	private LocalDate fecha;
+	private LocalDate fechaInicioDeAlquiler;
+	private LocalDate fechaFinalDeAlquiler;
 
 	public Alquiler(Cliente propietario, Propiedad enAlquiler,Cliente inquilino) {
 		this.propietario=propietario;
 		this.inquilino=inquilino;
 		this.enAlquiler=enAlquiler;
-		this.fecha=LocalDate.now();
+		this.fechaInicioDeAlquiler=LocalDate.now();
+		fechaFinalDeAlquiler = fechaInicioDeAlquiler.plusMonths(1);
 	}
 	
 	@Override
@@ -45,16 +47,31 @@ public class Alquiler implements Operacion {
 		return enAlquiler;
 	}
 
-	public LocalDate getFecha() {
-		return fecha;
+	public LocalDate getFechaInicioDeAlquiler() {
+		return fechaInicioDeAlquiler;
+	}
+	
+
+	public LocalDate getFechaFinalDeAlquiler() {
+		return fechaFinalDeAlquiler;
+	}
+	
+	public void pagarUnMesDeAlquiler() {
+		fechaFinalDeAlquiler.plusMonths(1);
+	}
+	
+	public void pagarVariosMesesDeAlquiler(int meses) {
+		fechaFinalDeAlquiler.plusMonths(meses);
 	}
 
 	@Override
 	public String toString() {
 		return "Alquiler [propietario=" + propietario + ", inquilino=" + inquilino + ", propiedad=" + enAlquiler
-				+ ", fecha=" + fecha + "]";
+				+ ", fecha=" + fechaInicioDeAlquiler + "]";
 	}
 	
+//	en versiones siguientes se puede llevar la cuenta de cuando un inquilino debe pagar o ser desalojado en caso 
+//	de no hacerlo
 	
 
 }

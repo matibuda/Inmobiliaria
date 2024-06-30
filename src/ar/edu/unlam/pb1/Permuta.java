@@ -60,8 +60,6 @@ public class Permuta implements Operacion {
 				+ ", propiedadB=" + propiedadB + ", fecha=" + fecha + "]";
 	}
 	
-	
-
 	}
 
 

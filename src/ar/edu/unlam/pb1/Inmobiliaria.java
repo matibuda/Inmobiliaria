@@ -11,6 +11,16 @@ public class Inmobiliaria{
 	private ArrayList<Propiedad> propiedades;
 	private ArrayList<Operacion> operaciones;
 	private HashSet<Cliente> clientes;
+	
+//	No pude encontrar una forma de guardar la coleccion de operaciones en cliente como fue la correccion
+//	sin que luego haya muchas operaciones repetidas ya que me encontraba
+//	con el dilema de a que cliente le guardaba la operacion
+//	al vendedor o al comprador? y cuando es una permuta si o si a ambos entonces luego al querer ver 
+//	el total de las operaciones el numero iba a estar casi duplicado
+//	en cambio al guardarlas en inmobiliria se tiene un fiel seguimiento del total de operaciones
+//	acceso a los clientes que participaron, que propiedad se vendio/alquilo/permuto
+//	y si se quisiera quien es el propietario actual, aunque esa informacion se encuentra mas facil en las 
+//	colecciones de propiedades dentro de Cliente Propietarios y las alquiladas en Cliente Inquilino
 
 	public Inmobiliaria(String nombre, String direccion, String eMail, Integer telefono) {
 		this.nombre = nombre;
@@ -157,17 +167,6 @@ public class Inmobiliaria{
 			promedio = sumatoriaDelPrecio / cantidadDeDepartamentos;
 		}
 		return promedio;
-	}
-	
-	public Cliente buscarPropietario(Propiedad propiedad) {		
-		for(Cliente actual:clientes) {
-			if (actual instanceof Propietario) {
-				if(actual.getPropiedades().contains(propiedad)) {
-					return actual;
-				}
-			}
-		}
-		return null;
 	}
 
 	public Boolean agregarPropiedadAlCliente(Cliente cliente, Propiedad propiedadParaVender) {
@@ -354,18 +353,22 @@ public class Inmobiliaria{
 		return ((Venta)primera).getVendedor();
 	}
 	
-	public Cliente buscarPropietarioActualLuegoDeUnaVenta(Propiedad propiedad) {
-		ArrayList<Operacion> operacionesDeLaPropiedad = buscarLasOperacionesEnLasQueParticipoDichaPropiedad(propiedad);
-		operacionesDeLaPropiedad = getVentas(operacionesDeLaPropiedad);
-		
-		Operacion ultima = operacionesDeLaPropiedad.getLast();
-		
-		
-		return ((Venta)ultima).getComprador();
+
+//	si la inmobiliaria lo permite una propiedad podria tener dos clientes de propietario
+//	(poseerla ambos en su coleccion de propiedades SIENDO UN CLIENTE PROPIETARIO)
+//	solo habria que ajustar el buscador para que devuelva una coleccion
+	public Cliente buscarElPropietarioActualDeUnaPropiedad(Propiedad propiedad) {		
+			for(Cliente actual:clientes) {
+				if (actual instanceof Propietario) {
+					if(actual.getPropiedades().contains(propiedad)) {
+						return actual;
+					}
+				}
+			}
+			return null;
 	}
 //	estos metodos de operacion estan hechos tratando de reemplazar a la coleccion de propiedades en clientes
-//	como fue mencionado en las correcciones
-//	buscar el propietario en ventas y alquiler es simple pero para permuta se acompleja mas 
-//	por lo menos en la forma en la que yo encare como un cliente posee la propiedad de una casa,depto,etc.
+//	como fue mencionado en las correcciones 
+
 
 }
