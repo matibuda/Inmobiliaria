@@ -17,19 +17,28 @@ La Permuta es una Operación donde una propiedad A cambia su Propietario X a su 
 
 1.	Se solicita desarrollar un software en Java, con un menú de opciones que permita:
 a.	Agregar nuevas propiedades (Las propiedad se pueden repetir, porque distintos vendedores pueden cargar una misma propiedad con diferentes valores de venta por ejemplo)
+
 b.	 Modificar propiedad existentes (La búsqueda de propiedad se realiza por código)
+
 c.	Agregar clientes (Son aquellos que se encuentran en búsqueda de una propiedad. No se puede agregar dos clientes con un mismo DNI)
+
 d.	Obtener listado de propiedades ordenado por precio.
+
 e.	Obtener el listado de propiedades ordenado por ubicación.
+
 f.	Buscar propiedades por diferentes parámetros:
 i.	Rango de precios
 ii.	Ubicación (Ciudad)
+
 g.	Realizar la venta de una propiedad
+
 h.	Realizar el alquiler de una propiedad
+
 i.	Realizar la permuta de dos propiedades
 
 3.	Desarrollar los siguientes casos de prueba en Junit.
 a.	queSePuedaDarDeAltaUnaCasaEnLaInmobiliaria
+
 b.	queSePuedanDarDeAltaDosCasasEnLaInmobiliaria
 
 c.	queSePuedaDarDeAltaUnDepartamentoEnLaInmobiliaria
