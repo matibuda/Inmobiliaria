@@ -16,6 +16,7 @@ El Alquiler es una operación donde una propiedad es alquilada, es decir, durant
 La Permuta es una Operación donde una propiedad A cambia su Propietario X a su nuevo Propietario Y, y al mismo tiempo la propiedad cambia su Propietario Y a X. Es un intercambio de propiedades entre los dueños.
 
 1.	Se solicita desarrollar un software en Java, con un menú de opciones que permita:
+   
 a.	Agregar nuevas propiedades (Las propiedad se pueden repetir, porque distintos vendedores pueden cargar una misma propiedad con diferentes valores de venta por ejemplo)
 
 b.	 Modificar propiedad existentes (La búsqueda de propiedad se realiza por código)
