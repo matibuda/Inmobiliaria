@@ -27,23 +27,38 @@ ii.	Ubicación (Ciudad)
 g.	Realizar la venta de una propiedad
 h.	Realizar el alquiler de una propiedad
 i.	Realizar la permuta de dos propiedades
+
 3.	Desarrollar los siguientes casos de prueba en Junit.
 a.	queSePuedaDarDeAltaUnaCasaEnLaInmobiliaria
 b.	queSePuedanDarDeAltaDosCasasEnLaInmobiliaria
+
 c.	queSePuedaDarDeAltaUnDepartamentoEnLaInmobiliaria
+
 d.	queSePuedanDarDeAltaDosDepartamentoEnLaInmobiliaria
+
 e.	queSePuedaObtenerElValorPromedioDeLasCasas
+
 f.	queSePuedaObtenerElValorPromedioDeLosDepartamentos
+
 g.	queSePuedaAgregarUnClienteALaInmobiliaria
 
 h.	queNoSePuedanAgregarDosClientesConUnMismoDni
+
 i.	queSePuedaRealizarLaVentaDeUnaPropiedad
+
 j.	queSePuedaRealizarElAlquilerDeUnaPropiedad
+
 k.	queSePuedaRealizarLaPermutaDeDosPropiedades
+
 l.	queSePuedaRealizarLaBusquedaDeCasasPorRangoDePreciosYElResultadoEsteOrdenadoPorPrecio
+
 m.	queSePuedaRealizarLaBusquedaDeCasasPorUbicacionYElResultadoEsteOrdenadoPorUbicacion
+
 n.	queSePuedaRealizarLaBusquedaDeDepartamentosPorRangoDePreciosYElResultadoEsteOrdenadoPorPrecio
+
 o.	queSePuedaRealizarLaBusquedaDeDepartamentosPorUbicacionYElResultadoEsteOrdenadoPorUbicacion
+
 p.	queAlBuscarPorUnCriterioQueNoArrojeResultadosSeProduzcaLaExcepcionSinResultadosException
+
 q.	queAlIntentarGuardarUnaPropiedadParaLaVentaCuyoImporteEstaPorDebajoDelUmbral10000SeArrojeLaExcepcionUmbralMinimoNoAlcanzadoException
 
